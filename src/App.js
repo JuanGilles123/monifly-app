@@ -4,13 +4,13 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProfilePage from './pages/ProfilePage';
-import ForgotPasswordPage from './pages/ForgotPasswordPage'; // <-- NUEVO
-import UpdatePasswordPage from './pages/UpdatePasswordPage'; // <-- NUEVO
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import Navbar from './components/Navbar';
 import { supabase } from './supabaseClient';
 import './App.css';
 
-function App() {
+function AppContent() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
@@ -87,6 +87,10 @@ function App() {
       </Routes>
     </div>
   );
+}
+
+function App() {
+  return <AppContent />;
 }
 
 export default App;
