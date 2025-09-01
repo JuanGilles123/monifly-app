@@ -26,35 +26,57 @@ const ProfilePage = ({ isDarkMode, toggleDarkMode }) => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        // Buscar en la tabla profiles
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('full_name, country_code')
-          .eq('id', user.id)
-          .single();
-
-        let userName = user.email.split('@')[0];
+        console.log('Usuario obtenido:', user);
         
-        if (!profileError && profileData) {
-          userName = profileData.full_name || userName;
-        } else {
-          console.log('No se encontró perfil, usando datos del usuario auth');
+        // Intentar buscar en la tabla profiles
+        try {
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('full_name, country_code')
+            .eq('id', user.id)
+            .single();
+
+          console.log('Resultado de profiles:', { profileData, profileError });
+
+          let userName = user.user_metadata?.full_name || user.email.split('@')[0] || 'Usuario';
+          
+          if (!profileError && profileData && profileData.full_name) {
+            userName = profileData.full_name;
+          }
+
+          const userData = {
+            name: userName,
+            email: user.email,
+            memberSince: new Date(user.created_at).toLocaleDateString('es-ES', { 
+              month: 'long', 
+              year: 'numeric' 
+            }),
+          };
+
+          setUserData(userData);
+          setFormData({
+            name: userData.name,
+            email: userData.email,
+          });
+        } catch (profileError) {
+          console.log('Error accediendo a profiles, usando datos del auth:', profileError);
+          
+          // Usar datos del auth como fallback
+          const userData = {
+            name: user.user_metadata?.full_name || user.email.split('@')[0] || 'Usuario',
+            email: user.email,
+            memberSince: new Date(user.created_at).toLocaleDateString('es-ES', { 
+              month: 'long', 
+              year: 'numeric' 
+            }),
+          };
+
+          setUserData(userData);
+          setFormData({
+            name: userData.name,
+            email: userData.email,
+          });
         }
-
-        const userData = {
-          name: userName,
-          email: user.email,
-          memberSince: new Date(user.created_at).toLocaleDateString('es-ES', { 
-            month: 'long', 
-            year: 'numeric' 
-          }),
-        };
-
-        setUserData(userData);
-        setFormData({
-          name: userData.name,
-          email: userData.email,
-        });
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -84,20 +106,29 @@ const ProfilePage = ({ isDarkMode, toggleDarkMode }) => {
         throw new Error('Usuario no encontrado');
       }
 
-      // Actualizar en la tabla profiles
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .upsert({ 
-          id: user.id,
-          full_name: formData.name,
-          country_code: 'CO' // Por defecto
-        });
+      console.log('Intentando actualizar perfil para usuario:', user.id);
 
-      if (profileError) {
-        throw profileError;
+      // Intentar actualizar en la tabla profiles (si existe y funciona)
+      try {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .upsert({ 
+            id: user.id,
+            full_name: formData.name,
+            country_code: 'CO'
+          });
+
+        if (profileError) {
+          console.error('Error en profiles table:', profileError);
+          // Continuar sin fallar, por ahora solo actualizamos localmente
+        } else {
+          console.log('Perfil actualizado en la tabla profiles');
+        }
+      } catch (profileTableError) {
+        console.log('Tabla profiles no disponible, actualizando solo localmente:', profileTableError);
       }
 
-      // Actualizar el estado local
+      // Actualizar el estado local independientemente
       setUserData(prev => ({
         ...prev,
         name: formData.name
