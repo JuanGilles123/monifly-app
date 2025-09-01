@@ -1,0 +1,140 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  background-color: var(--card-bg-color); /* <-- MODO OSCURO */
+  color: var(--text-primary-color);      /* <-- MODO OSCURO */
+  padding: 30px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  animation: scaleUp 0.3s ease-out;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.form-step label {
+  font-weight: bold;
+  color: var(--text-secondary-color); /* <-- MODO OSCURO */
+}
+
+.form-step input, .form-step select {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);      /* <-- MODO OSCURO */
+  background-color: var(--input-bg-color);   /* <-- MODO OSCURO */
+  color: var(--text-primary-color);          /* <-- MODO OSCURO */
+  font-size: 16px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border-color); /* <-- MODO OSCURO */
+  border-radius: 4px;
+  margin: 15px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2dd4bf, #34d399);
+  border-radius: 4px;
+  transition: width 0.4s ease-in-out;
+}
+
+.multi-step-form {
+  position: relative;
+  width: 100%;
+  min-height: 180px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.form-step {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+}
+
+.form-step.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* El botón principal de "Siguiente" o "Guardar" */
+.form-step .submit-button {
+  width: 100%;
+  margin-top: 10px;
+  /* El estilo de este botón ya está en App.css, así que lo hereda */
+}
+
+
+/* --- NUEVOS ESTILOS PARA BOTONES DE NAVEGACIÓN --- */
+.modal-nav-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+/* Botón secundario para "Atrás" y "Cancelar" */
+.btn-secondary {
+  flex-grow: 1; /* Para que los botones ocupen el espacio disponible */
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--text-secondary-color);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--input-bg-color);
+  color: var(--text-primary-color);
+}
+
+/* Animaciones (sin cambios) */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+

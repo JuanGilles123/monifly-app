@@ -1,0 +1,101 @@
+.hamburger-menu {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  z-index: 2001; /* Debe estar por encima de todo */
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 24px;
+  padding: 0;
+}
+
+.line {
+  width: 100%;
+  height: 3px;
+  background-color: var(--text-primary-color);
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Animación de la "hamburguesa" a una "X" */
+.line-1.open {
+  transform: rotate(45deg) translate(5px, 6px);
+}
+.line-2.open {
+  opacity: 0;
+}
+.line-3.open {
+  transform: rotate(-45deg) translate(5px, -6px);
+}
+
+/* El menú lateral */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 280px;
+  background-color: var(--card-bg-color); /* Usar variable para modo oscuro */
+  box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out, background-color 0.3s;
+  z-index: 2000;
+  padding-top: 80px;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav li {
+  padding: 20px;
+  text-align: center;
+}
+
+.sidebar nav a {
+  text-decoration: none;
+  color: var(--text-primary-color); /* Usar variable para modo oscuro */
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/*
+  Le damos al contenedor principal un z-index para que entre
+  en el "juego de capas", pero uno más bajo que el del menú.
+*/
+.dashboard-grid-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- ESTILOS PARA EL NUEVO BOTÓN DE CERRAR SESIÓN --- */
+.logout-button {
+  background-color: transparent;
+  border: 2px solid var(--text-secondary-color);
+  color: var(--text-secondary-color);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  width: 80%;
+  margin-top: 10px;
+}
+
+.logout-button:hover {
+  background-color: var(--text-secondary-color);
+  color: var(--card-bg-color);
+}
+

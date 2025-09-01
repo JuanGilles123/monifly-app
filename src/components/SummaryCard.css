@@ -1,0 +1,73 @@
+.summary-card {
+  background-color: var(--card-bg-color);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  color: var(--text-primary-color);
+  transition: background-color 0.3s, color 0.3s;
+  height: 100%; /* Ocupa toda la altura del contenedor grid */
+}
+
+.summary-card h3 {
+  margin-top: 0;
+  text-align: left;
+}
+
+.summary-balance {
+  margin: 20px 0;
+  text-align: left;
+}
+
+.summary-balance span {
+  font-size: 1rem;
+  color: var(--text-secondary-color);
+}
+
+.summary-balance h2 {
+  font-size: 2.2rem;
+  margin: 5px 0 0 0;
+  color: var(--text-primary-color);
+}
+
+.summary-details {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.summary-item .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.summary-item.income .dot {
+  background-color: #4BC0C0;
+}
+
+.summary-item.expense .dot {
+  background-color: #FF6384;
+}
+
+.summary-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+}
+
+.summary-item strong {
+  font-size: 1.1rem;
+}
+
+.summary-chart {
+  position: relative;
+  height: 180px; /* Altura para el gráfico */
+}

@@ -1,0 +1,115 @@
+.history-table-container {
+  margin-top: 40px;
+  background-color: var(--card-bg-color);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  transition: background-color 0.3s;
+}
+
+.history-table-container h3 {
+  margin-top: 0;
+  text-align: left;
+  color: var(--text-primary-color);
+}
+
+.history-table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.history-table-container th {
+  text-align: left;
+  padding: 12px 8px;
+  color: var(--text-secondary-color);
+  border-bottom: 2px solid var(--border-color);
+  font-size: 0.9rem;
+}
+
+.history-table-container td {
+  padding: 15px 8px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary-color);
+}
+
+.history-table-container tr:last-child td {
+  border-bottom: none;
+}
+
+.amount-col {
+  text-align: right;
+  font-weight: 500;
+}
+
+.income-row .amount-col {
+  color: #34d399;
+}
+
+.expense-row .amount-col {
+  color: #ef4444;
+}
+
+.type-indicator {
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.type-indicator.income { color: #34d399; }
+.type-indicator.expense { color: #ef4444; }
+
+.description-text {
+  display: block;
+  font-weight: 500;
+}
+
+.category-text {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text-secondary-color);
+}
+
+.no-transactions-message {
+  text-align: center;
+  padding: 30px;
+  color: var(--text-secondary-color);
+}
+
+/* --- ESTILOS PARA LOS NUEVOS ICONOS --- */
+.actions-col {
+  text-align: center;
+  width: 100px; /* Ancho fijo para la columna de acciones */
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin: 0 5px;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  transition: fill 0.2s ease-in-out;
+}
+
+.edit-btn .action-icon {
+  fill: var(--text-secondary-color);
+}
+
+.edit-btn:hover .action-icon {
+  fill: #34d399; /* Verde al pasar el mouse */
+}
+
+.delete-btn .action-icon {
+  fill: var(--text-secondary-color);
+}
+
+.delete-btn:hover .action-icon {
+  fill: #ef4444; /* Rojo al pasar el mouse */
+}
+

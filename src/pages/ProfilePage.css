@@ -1,0 +1,162 @@
+.profile-container {
+  padding: 80px 20px 20px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.profile-card, .settings-card {
+  background-color: var(--card-bg-color);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #2dd4bf, #34d399);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 0 auto 15px auto;
+}
+
+.profile-card h2 {
+  margin: 0;
+  color: var(--text-primary-color);
+}
+
+.profile-card p {
+  color: #666;
+  margin: 5px 0 15px 0;
+}
+
+.member-since {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.settings-card h3 {
+  text-align: left;
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: var(--text-primary-color);
+}
+
+.setting-item {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.setting-item label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-secondary-color);
+}
+
+.setting-item input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 1rem;
+  background-color: var(--input-bg-color);
+  color: var(--text-primary-color);
+}
+
+.save-button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  background: linear-gradient(90deg, #2dd4bf, #34d399);
+  transition: transform 0.2s;
+}
+
+.save-button:hover {
+  transform: scale(1.02);
+}
+
+/* Toggle Switch para Modo Oscuro */
+.dark-mode-toggle {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2dd4bf;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Media Queries para Responsividad --- */
+@media (max-width: 768px) {
+  .profile-container {
+    padding-top: 70px;
+  }
+}

@@ -1,0 +1,312 @@
+/* Estilos Globales y de fondo */
+:root {
+  --background-color: #f7f9fc;
+  --card-bg-color: #ffffff;
+  --text-primary-color: #333;
+  --text-secondary-color: #666;
+  --border-color: #ddd;
+  --input-bg-color: #f7f9fc;
+}
+
+[data-theme="dark"] {
+  --background-color: #121212;
+  --card-bg-color: #1e1e1e;
+  --text-primary-color: #e0e0e0;
+  --text-secondary-color: #b0b0b0;
+  --border-color: #444;
+  --input-bg-color: #2a2a2a;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-primary-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url('./assets/background.jpg'); /* ¡IMPORTANTE! */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Contenedor del formulario */
+.login-form-container {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 450px;
+}
+
+/* Logo */
+.logo-img {
+  width: 80px;
+  margin-bottom: 1rem;
+}
+
+/* Formulario y sus elementos */
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.login-form input {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.submit-button {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  background: linear-gradient(90deg, #2dd4bf, #34d399);
+  transition: transform 0.2s;
+}
+
+.submit-button:hover {
+  transform: scale(1.03);
+}
+
+/* Enlaces inferiores */
+.login-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.login-links a {
+  color: #555;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
+
+/* Animación de carga */
+.loading-spinner-overlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner-logo {
+  width: 100px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(0.95);
+  }
+}
+
+.form-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Estilo y posicionamiento de cada formulario (login y registro) */
+.form-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+  opacity: 0;
+  transform: translateX(100%); /* Inicia fuera de la vista (a la derecha) */
+}
+
+/* El formulario que está activo se posiciona en el centro */
+.form-wrapper.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* El formulario de login, cuando está activo, viene desde la izquierda */
+.form-wrapper:not(.active) {
+    transform: translateX(-100%); /* Inicia fuera de la vista (a la izquierda) */
+}
+
+/* Ajustes para el texto de los títulos */
+.form-wrapper h2 {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+.progress-bar-container {
+  width: 80%;
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  margin: 15px 0;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #2dd4bf, #34d399);
+  border-radius: 4px;
+  transition: width 0.4s ease-in-out;
+}
+
+/* Contenedor principal del formulario multi-pasos */
+.multi-step-form {
+  position: relative;
+  width: 100%;
+  min-height: 180px; /* <--- ESTE ES EL CAMBIO */
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+/* Estilo para cada paso individual */
+.form-step {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out, visibility 0.4s;
+}
+
+/* Estilo para el paso que está activo (visible) */
+.form-step.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.form-step label {
+  font-weight: bold;
+  color: #333;
+}
+
+.form-step input {
+  width: 90%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  text-align: center;
+}
+
+/* El botón dentro de cada paso ocupa todo el ancho */
+.form-step .submit-button {
+    width: 100%;
+}
+
+.error-message, .success-message {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+.password-input-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* El input dentro del contenedor ocupa todo el ancho */
+.password-input-container input {
+  width: 100%;
+  /* Dejamos un espacio a la derecha para que el icono no se superponga */
+  padding-right: 45px !important; 
+  box-sizing: border-box;
+}
+
+/* El botón con el icono del ojo */
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estilo del icono SVG */
+.password-toggle-btn svg {
+  stroke: var(--text-secondary-color); /* Usa el color de texto secundario del tema */
+  transition: stroke 0.2s;
+}
+
+.password-toggle-btn:hover svg {
+    stroke: var(--text-primary-color); /* Cambia al color primario al pasar el mouse */
+}
+
+/* Ajuste específico para el input dentro del formulario de registro */
+.form-step .password-input-container {
+    width: 90%;
+}

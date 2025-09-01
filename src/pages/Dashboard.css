@@ -1,0 +1,148 @@
+.dashboard-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 0;
+  padding: 30px;
+  height: 100vh;
+  max-height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--background-color);
+  transition: background-color 0.3s;
+  /* --- LA SOLUCIÓN AL ENCIMADO --- */
+  position: relative; /* Establece un contexto de apilamiento */
+  z-index: 1;      /* Coloca todo el dashboard en la capa 1 */
+}
+
+.dashboard-summary {
+  border-left: 1px solid var(--border-color);
+  padding-left: 30px;
+  transition: border-color 0.3s;
+}
+
+.dashboard-main-content, .dashboard-summary {
+  overflow-y: auto;
+  max-height: calc(100vh - 60px);
+  padding-right: 10px;
+}
+
+/* --- ESTILOS PARA LA BARRA DE SCROLL --- */
+.dashboard-main-content::-webkit-scrollbar, 
+.dashboard-summary::-webkit-scrollbar {
+  width: 8px;
+}
+.dashboard-main-content::-webkit-scrollbar-track, 
+.dashboard-summary::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dashboard-main-content::-webkit-scrollbar-thumb, 
+.dashboard-summary::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
+}
+.dashboard-main-content::-webkit-scrollbar-thumb:hover, 
+.dashboard-summary::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-secondary-color);
+}
+
+.dashboard-main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  text-align: left;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  color: var(--text-primary-color);
+}
+
+.dashboard-header p {
+  font-size: 1.2rem;
+  color: var(--text-secondary-color);
+  margin-top: 10px;
+}
+
+.dark-mode-toggle-dashboard {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* --- CORRECCIÓN DE LOS BOTONES --- */
+.dashboard-actions-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 25px; /* <-- ESTA ES LA LÍNEA CLAVE QUE FALTABA */
+  margin-top: 40px;
+  width: 100%;
+}
+
+.action-card {
+  background-color: var(--card-bg-color);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+  text-align: center;
+  flex: 1;
+}
+
+.action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.action-card h2 {
+  margin: 10px 0 0 0;
+  font-size: 1.5rem;
+  color: var(--text-primary-color);
+}
+
+.icon-placeholder {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.income .icon-placeholder {
+  color: #34d399;
+}
+
+.expense .icon-placeholder {
+  color: #ef4444;
+}
+
+/* --- Media Queries para Responsividad --- */
+@media (max-width: 1024px) {
+  .dashboard-grid-container {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: none;
+    gap: 30px;
+  }
+
+  .dashboard-summary {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  .dashboard-main-content, .dashboard-summary {
+    overflow-y: visible;
+    max-height: none;
+    padding-right: 0;
+  }
+
+  .dashboard-summary {
+    order: -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-actions-grid {
+    flex-direction: column;
+  }
+}
+
