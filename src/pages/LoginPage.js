@@ -70,7 +70,16 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
       </form>
       <div className="login-links">
         <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
-        <a href="#" onClick={() => setIsRegistering(true)}>Crear cuenta</a>
+        <button 
+          type="button" 
+          className="link-button" 
+          onClick={(e) => {
+            e.preventDefault();
+            setIsRegistering(true);
+          }}
+        >
+          Crear cuenta
+        </button>
       </div>
     </div>
   );
