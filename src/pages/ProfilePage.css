@@ -5,6 +5,31 @@
   animation: fadeIn 0.5s ease-in-out;
 }
 
+/* Mensajes de estado */
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c33;
+}
+
+.success-message {
+  background-color: #efe;
+  color: #363;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #363;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary-color);
+}
+
 .profile-card, .settings-card {
   background-color: var(--card-bg-color);
   padding: 25px;

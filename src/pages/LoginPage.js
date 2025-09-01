@@ -149,13 +149,21 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
         console.log('Usuario registrado exitosamente:', data.user);
         
         // Crear el perfil en la tabla profiles
-        const { error: profileError } = await supabase
+        console.log('Intentando crear perfil con datos:', { 
+          id: data.user.id, 
+          full_name: formData.name, 
+          country_code: formData.country 
+        });
+        
+        const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .insert({ 
             id: data.user.id, 
             full_name: formData.name, 
             country_code: formData.country 
           });
+        
+        console.log('Resultado de inserción en profiles:', { profileData, profileError });
         
         if (profileError) {
           console.error('Error creando perfil:', profileError);
