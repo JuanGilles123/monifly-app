@@ -126,24 +126,41 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
     setError(null);
     setMessage(null);
 
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-    });
+    console.log('Intentando registrar usuario con:', { email: formData.email, name: formData.name });
 
-    if (error) {
-      setError(error.message);
-    } else if (data.user) {
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({ id: data.user.id, full_name: formData.name, country_code: formData.country });
-      
-      if (profileError) {
-        setError(`Error creando perfil: ${profileError.message}`);
-      } else {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.name,
+            country_code: formData.country,
+          }
+        }
+      });
+
+      console.log('Respuesta de Supabase:', { data, error });
+
+      if (error) {
+        console.error('Error de registro:', error);
+        setError(error.message);
+      } else if (data.user) {
+        console.log('Usuario registrado exitosamente:', data.user);
         setMessage("¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.");
+        // Opcional: cambiar automáticamente al formulario de login después de unos segundos
+        setTimeout(() => {
+          setIsRegistering(false);
+        }, 3000);
+      } else {
+        console.log('No se recibió usuario ni error');
+        setError('No se pudo completar el registro. Inténtalo de nuevo.');
       }
+    } catch (err) {
+      console.error('Error durante el registro:', err);
+      setError(`Error durante el registro: ${err.message}`);
     }
+    
     setIsLoading(false);
   };
   
