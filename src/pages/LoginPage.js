@@ -147,11 +147,27 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
         setError(error.message);
       } else if (data.user) {
         console.log('Usuario registrado exitosamente:', data.user);
-        setMessage("¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.");
-        // Opcional: cambiar automáticamente al formulario de login después de unos segundos
-        setTimeout(() => {
-          setIsRegistering(false);
-        }, 3000);
+        
+        // Crear el perfil en la tabla profiles
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({ 
+            id: data.user.id, 
+            full_name: formData.name, 
+            country_code: formData.country 
+          });
+        
+        if (profileError) {
+          console.error('Error creando perfil:', profileError);
+          setError(`Usuario creado pero error en perfil: ${profileError.message}`);
+        } else {
+          console.log('Perfil creado exitosamente');
+          setMessage("¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.");
+          // Cambiar automáticamente al formulario de login después de unos segundos
+          setTimeout(() => {
+            setIsRegistering(false);
+          }, 3000);
+        }
       } else {
         console.log('No se recibió usuario ni error');
         setError('No se pudo completar el registro. Inténtalo de nuevo.');

@@ -78,6 +78,7 @@ const TransactionModal = ({ isOpen, onClose, type, session, onTransactionSaved, 
   
     setLoading(false);
     if (error) {
+      console.error('Error guardando transacción:', error);
       setError(`Error al guardar: ${error.message}`);
     } else {
       onTransactionSaved(); // Avisamos al Dashboard que refresque los datos

@@ -26,8 +26,24 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
 
     if (profileError) {
       console.error('Error fetching profile:', profileError);
-      setError('No se pudo cargar tu perfil. Por favor, recarga la página.');
-      setProfile({ full_name: 'Usuario' });
+      // Si no encuentra el perfil, lo creamos
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert({ 
+          id: session.user.id, 
+          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+          country_code: session.user.user_metadata?.country_code || 'CO'
+        });
+      
+      if (insertError) {
+        console.error('Error creating profile:', insertError);
+        setProfile({ full_name: 'Usuario' });
+      } else {
+        setProfile({ 
+          full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuario',
+          country_code: session.user.user_metadata?.country_code || 'CO'
+        });
+      }
     } else {
       setProfile(profileData);
     }
@@ -40,13 +56,14 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
 
     if (transactionsError) {
       console.error('Error fetching transactions:', transactionsError);
-      setError('No se pudieron cargar tus transacciones.');
+      // Si la tabla transactions no existe, inicializar vacío
+      setTransactions([]);
     } else {
       setTransactions(transactionsData);
     }
 
     setLoading(false);
-  }, [session.user.id]);
+  }, [session.user]);
 
   useEffect(() => {
     fetchUserData();
