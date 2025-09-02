@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient';
 import LoadingSpinner from '../components/LoadingSpinner';
 import logo from '../assets/monifly-logo.png';
 import { Link } from 'react-router-dom';
+import './AuthStyles.css';
 
 // Si prefieres traerlo desde supabaseClient, expórtalo allí como SITE_URL.
 // Aquí lo resolvemos directo por si acaso:

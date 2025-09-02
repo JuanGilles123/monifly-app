@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/monifly-logo.png';
-import './AuthPages.css';
+import './AuthStyles.css';
 
 const UpdatePasswordPage = () => {
   const [booting, setBooting] = useState(true);   // prepara sesión desde el code

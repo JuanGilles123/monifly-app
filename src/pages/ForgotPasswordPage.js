@@ -5,7 +5,7 @@ import { supabase } from '../supabaseClient';
 // import { SITE_URL } from '../supabaseClient';
 import { Link } from 'react-router-dom';
 import logo from '../assets/monifly-logo.png';
-import './AuthPages.css';
+import './AuthStyles.css';
 
 const ForgotPasswordPage = () => {
   const [loading, setLoading] = useState(false);
