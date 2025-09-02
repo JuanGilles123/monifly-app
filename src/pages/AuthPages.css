@@ -1,92 +1,51 @@
-.auth-page-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  background-image: url('../assets/background.jpg');
-  background-size: cover;
-  background-position: center;
-  box-sizing: border-box;
-}
-
-.auth-form-container {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  padding: 40px;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  width: 100%;
-  max-width: 450px;
+.analytics-container {
+  padding: 80px 20px 20px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.auth-subtitle {
-  color: #666;
-  margin-bottom: 20px;
+/* Título principal */
+.analytics-container h1 {
+  color: var(--text-primary-color);
 }
 
-.auth-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+/* Tarjetas de KPIs */
+.analytics-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0 40px;
 }
 
-/* --- ESTILOS AÑADIDOS Y CORREGIDOS --- */
-.auth-form input {
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 16px;
+.analytics-card {
+  background-color: var(--card-bg-color);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  color: var(--text-primary-color);
 }
 
-.auth-form .submit-button {
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    background: linear-gradient(90deg, #2dd4bf, #34d399);
-    transition: transform 0.2s;
+.analytics-card .big {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 8px 0 0;
 }
 
-.auth-form .submit-button:hover {
-    transform: scale(1.03);
-}
-/* --- FIN DE ESTILOS AÑADIDOS --- */
-
-.auth-links {
-  margin-top: 20px;
-}
-
-.auth-links a {
-  color: #555;
-  text-decoration: none;
-  font-weight: 500;
+/* Contenedor de gráficos */
+.chart-wrapper {
+  background-color: var(--card-bg-color);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s;
 }
 
-.auth-links a:hover {
-  text-decoration: underline;
+.chart-wrapper h2 {
+  color: var(--text-primary-color);
+  margin-bottom: 12px;
 }
-
-/* Estilo para botón que se ve como enlace */
-.link-button {
-  background: none;
-  border: none;
-  color: #555;
-  text-decoration: none;
-  font-weight: 500;
-  cursor: pointer;
-  font-size: inherit;
-  font-family: inherit;
-  padding: 0;
-  margin: 0;
-}
-
-.link-button:hover {
-  text-decoration: underline;
-}
-

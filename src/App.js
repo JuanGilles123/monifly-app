@@ -35,28 +35,25 @@ function AppContent() {
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
       setSession(sess ?? null);
 
-      // Navegación según evento
       switch (event) {
         case 'PASSWORD_RECOVERY':
-          // Al volver desde el correo (link con ?code=...), vamos a la página que canjea el code.
+          // siempre permitir llegar a /update-password
           navigate('/update-password', { replace: true });
           break;
 
         case 'SIGNED_IN':
-          // Si llega desde login o desde confirmación, llévalo al dashboard
-          if (location.pathname === '/login' || location.pathname === '/forgot-password' || location.pathname === '/update-password') {
+          // si viene desde login o forgot, mándalo al dashboard
+          if (location.pathname === '/login' || location.pathname === '/forgot-password') {
             navigate('/', { replace: true });
           }
+          // OJO: NO redirigir si está en /update-password
           break;
 
         case 'SIGNED_OUT':
-          // En logout, regresa a login
           navigate('/login', { replace: true });
           break;
 
-        case 'USER_UPDATED':
         default:
-          // Sin navegación especial
           break;
       }
     });
@@ -66,7 +63,7 @@ function AppContent() {
       sub.subscription?.unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // una sola vez al montar
+  }, []);
 
   // Persistencia y atributo del tema
   useEffect(() => {
@@ -76,12 +73,9 @@ function AppContent() {
 
   const toggleDarkMode = () => setIsDarkMode((v) => !v);
 
-  // Loader global mientras resolvemos la sesión inicial
-  if (loading) {
-    return <div className="loading-fullscreen">Cargando...</div>;
-  }
+  if (loading) return <div className="loading-fullscreen">Cargando...</div>;
 
-  // Helpers de rutas
+  // Guards
   const Protected = ({ children }) => (session ? children : <Navigate to="/login" replace />);
   const PublicOnly = ({ children }) => (session ? <Navigate to="/" replace /> : children);
 
@@ -90,7 +84,7 @@ function AppContent() {
       {session && <Navbar />}
 
       <Routes>
-        {/* Rutas públicas */}
+        {/* Públicas */}
         <Route
           path="/login"
           element={
@@ -107,17 +101,11 @@ function AppContent() {
             </PublicOnly>
           }
         />
-        <Route
-          path="/update-password"
-          element={
-            // Esta ruta puede llegar con sesión aún no creada (se crea en la propia página con exchangeCodeForSession)
-            <PublicOnly>
-              <UpdatePasswordPage />
-            </PublicOnly>
-          }
-        />
 
-        {/* Rutas protegidas */}
+        {/* ⚠️ /update-password SIN PublicOnly para no expulsar al usuario */}
+        <Route path="/update-password" element={<UpdatePasswordPage />} />
+
+        {/* Protegidas */}
         <Route
           path="/"
           element={

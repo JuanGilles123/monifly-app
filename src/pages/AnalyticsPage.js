@@ -19,6 +19,14 @@ const monthKey = (isoDate) => {
 const fmtCOP = (v) =>
   new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(v || 0);
 
+// Paletas de color (explícitas)
+const PIE_COLORS = ['#4F46E5', '#06B6D4', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6', '#14B8A6', '#E11D48'];
+const PIE_BORDERS = '#00000022';
+const BAR_INCOME_BG = '#22C55E';
+const BAR_INCOME_BORDER = '#16A34A';
+const BAR_EXPENSE_BG = '#EF4444';
+const BAR_EXPENSE_BORDER = '#B91C1C';
+
 export default function AnalyticsPage({ isDarkMode }) {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
@@ -31,7 +39,6 @@ export default function AnalyticsPage({ isDarkMode }) {
       setLoading(true);
       setAuthError('');
 
-      // 1) Obtén el usuario actual
       const { data: userData, error: userErr } = await supabase.auth.getUser();
       if (userErr) {
         if (active) {
@@ -51,7 +58,6 @@ export default function AnalyticsPage({ isDarkMode }) {
         return;
       }
 
-      // 2) Lee transacciones reales del usuario
       const { data, error } = await supabase
         .from('transactions')
         .select('type, category, amount, created_at')
@@ -107,12 +113,17 @@ export default function AnalyticsPage({ isDarkMode }) {
   }, [rows]);
 
   // --- Datos para gráficos ---
+  const pieLabels = Object.keys(expensesByCategory);
+  const pieValues = Object.values(expensesByCategory);
+
   const pieData = {
-    labels: Object.keys(expensesByCategory),
+    labels: pieLabels,
     datasets: [
       {
         label: 'Gastos por Categoría',
-        data: Object.values(expensesByCategory),
+        data: pieValues,
+        backgroundColor: pieLabels.map((_, i) => PIE_COLORS[i % PIE_COLORS.length]),
+        borderColor: PIE_BORDERS,
         borderWidth: 1,
       },
     ],
@@ -124,11 +135,15 @@ export default function AnalyticsPage({ isDarkMode }) {
       {
         label: 'Ingresos',
         data: monthly.keys.map(k => monthly.acc[k].income),
+        backgroundColor: BAR_INCOME_BG,
+        borderColor: BAR_INCOME_BORDER,
         borderWidth: 1,
       },
       {
         label: 'Gastos',
         data: monthly.keys.map(k => monthly.acc[k].expense),
+        backgroundColor: BAR_EXPENSE_BG,
+        borderColor: BAR_EXPENSE_BORDER,
         borderWidth: 1,
       },
     ],
@@ -142,9 +157,7 @@ export default function AnalyticsPage({ isDarkMode }) {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        labels: { color: textColor },
-      },
+      legend: { labels: { color: textColor } },
       tooltip: {
         callbacks: {
           label: (ctx) => {
@@ -197,9 +210,13 @@ export default function AnalyticsPage({ isDarkMode }) {
 
           <div className="chart-wrapper">
             <h2>Gastos por Categoría</h2>
-            <div style={{ height: 340 }}>
-              <Pie data={pieData} options={chartOptions} />
-            </div>
+            {pieValues.length === 0 ? (
+              <div className="analytics-card">Aún no hay gastos para graficar.</div>
+            ) : (
+              <div style={{ height: 340 }}>
+                <Pie data={pieData} options={chartOptions} />
+              </div>
+            )}
           </div>
 
           <div className="chart-wrapper">
