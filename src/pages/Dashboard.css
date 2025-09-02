@@ -4,7 +4,8 @@
   gap: 0;
   padding: 30px;
   height: 100vh;
-  max-height: 100vh;
+  height: calc(100vh - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px));
+  max-height: calc(100vh - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px));
   box-sizing: border-box;
   background-color: var(--background-color);
   transition: background-color 0.3s;
@@ -21,7 +22,7 @@
 
 .dashboard-main-content, .dashboard-summary {
   overflow-y: auto;
-  max-height: calc(100vh - 60px);
+  max-height: calc(100vh - 60px - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px));
   padding-right: 10px;
 }
 

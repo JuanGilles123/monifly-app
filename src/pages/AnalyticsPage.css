@@ -1,5 +1,5 @@
 .analytics-container {
-  padding: 80px 20px 20px 20px;
+  padding: calc(80px + var(--safe-area-inset-top, 0px)) 20px calc(20px + var(--safe-area-inset-bottom, 0px)) 20px;
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;

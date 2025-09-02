@@ -6,6 +6,12 @@
   --text-secondary-color: #666;
   --border-color: #ddd;
   --input-bg-color: #f7f9fc;
+  
+  /* Variables para áreas seguras de iOS */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-right: env(safe-area-inset-right);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
 }
 
 [data-theme="dark"] {
@@ -15,6 +21,23 @@
   --text-secondary-color: #b0b0b0;
   --border-color: #444;
   --input-bg-color: #2a2a2a;
+}
+
+/* Estilos para áreas seguras de iOS */
+html, body {
+  background-color: var(--background-color);
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  min-height: calc(100vh - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+  background-color: var(--background-color);
+  transition: background-color 0.3s;
 }
 
 body {
