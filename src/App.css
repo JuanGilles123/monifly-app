@@ -59,10 +59,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  min-height: calc(100vh - var(--safe-area-inset-top, 0px) - var(--safe-area-inset-bottom, 0px));
   background-image: url('./assets/background.jpg'); /* ¡IMPORTANTE! */
   background-size: cover;
   background-position: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Contenedor del formulario */
@@ -79,7 +82,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 450px;
+  min-height: auto;
+  margin: 20px;
 }
 
 /* Logo */
@@ -337,19 +341,36 @@ body {
 /* === RESPONSIVE DESIGN === */
 @media (max-width: 768px) {
   .login-page-container {
-    padding: 20px;
+    padding: 15px;
     align-items: flex-start;
-    padding-top: 50px;
+    justify-content: center;
+    padding-top: 30px;
   }
 
   .login-form-container {
-    padding: 30px 20px;
+    padding: 25px 20px;
     max-width: 100%;
+    width: 100%;
     min-height: auto;
+    margin: 0;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .logo-img {
     width: 60px;
+    margin-bottom: 0.8rem;
+  }
+
+  .form-wrapper h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+
+  .login-form,
+  .multi-step-form {
+    gap: 12px;
+    margin-top: 15px;
   }
 
   .login-form input,
@@ -366,6 +387,7 @@ body {
 
   .form-step h3 {
     font-size: 18px;
+    margin-bottom: 10px;
   }
 
   .password-input-container {
@@ -394,23 +416,35 @@ body {
 
 @media (max-width: 480px) {
   .login-page-container {
-    padding: 15px;
-    padding-top: 30px;
+    padding: 10px;
+    padding-top: 20px;
+    align-items: flex-start;
   }
 
   .login-form-container {
-    padding: 25px 15px;
+    padding: 20px 15px;
     border-radius: 15px;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .logo-img {
     width: 50px;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .form-wrapper h2 {
+    font-size: 1rem;
+    margin-bottom: 8px;
   }
 
   .login-form,
   .multi-step-form {
-    gap: 12px;
+    gap: 10px;
+    margin-top: 10px;
   }
 
   .login-form input,
@@ -422,11 +456,35 @@ body {
 
   .submit-button {
     padding: 12px;
+    font-size: 14px;
   }
 
   .form-step h3 {
-    font-size: 16px;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .form-step {
     margin-bottom: 15px;
+  }
+
+  .login-links {
+    margin-top: 15px;
+    gap: 8px;
+  }
+
+  .modal-nav-buttons {
+    gap: 8px;
+    margin-top: 15px;
+  }
+
+  .input-hint {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .password-toggle-btn {
+    padding: 8px;
   }
 
   .input-hint {
