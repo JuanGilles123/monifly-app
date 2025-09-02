@@ -15,25 +15,98 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
   const [error, setError] = useState(null);
   const formRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
+  
+  // SEGURIDAD: Rate limiting
+  const [attemptCount, setAttemptCount] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [blockTime, setBlockTime] = useState(0);
+
+  // SEGURIDAD: Verificar si está bloqueado
+  useEffect(() => {
+    const checkBlock = () => {
+      const blockUntil = localStorage.getItem('blockUntil');
+      if (blockUntil && Date.now() < parseInt(blockUntil)) {
+        setIsBlocked(true);
+        setBlockTime(Math.ceil((parseInt(blockUntil) - Date.now()) / 1000));
+      } else {
+        setIsBlocked(false);
+        setBlockTime(0);
+        localStorage.removeItem('blockUntil');
+      }
+    };
+
+    checkBlock();
+    const interval = setInterval(checkBlock, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(null);
 
+    // SEGURIDAD: Verificar si está bloqueado
+    if (isBlocked) {
+      setError(`Demasiados intentos. Intenta en ${blockTime} segundos.`);
+      return;
+    }
+
     const { email, password } = Object.fromEntries(new FormData(e.target));
+    
+    // SEGURIDAD: Validaciones más estrictas
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       return setError('Por favor, ingresa un formato de correo válido.');
     }
+    
+    if (password.length < 6) {
+      return setError('La contraseña debe tener al menos 6 caracteres.');
+    }
+
+    // SEGURIDAD: Detectar patrones de bot
+    const formFillTime = Date.now() - (window.formStartTime || Date.now());
+    if (formFillTime < 2000) { // Menos de 2 segundos es sospechoso
+      setError('Por favor, tómate tu tiempo para llenar el formulario.');
+      return;
+    }
 
     setIsLoading(true);
+    
+    // SEGURIDAD: Delay artificial para prevenir ataques de fuerza bruta
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
+    
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setError('Credenciales inválidas. Verifica tu correo y contraseña.');
+      
+      if (error) {
+        // SEGURIDAD: Incrementar contador de intentos
+        const newAttemptCount = attemptCount + 1;
+        setAttemptCount(newAttemptCount);
+        
+        // SEGURIDAD: Bloquear después de 3 intentos
+        if (newAttemptCount >= 3) {
+          const blockUntil = Date.now() + (Math.pow(2, newAttemptCount - 3) * 60000); // Exponential backoff
+          localStorage.setItem('blockUntil', blockUntil.toString());
+          setIsBlocked(true);
+          setError(`Demasiados intentos fallidos. Bloqueado por ${Math.ceil((blockUntil - Date.now()) / 60000)} minutos.`);
+        } else {
+          setError(`Credenciales inválidas. Intentos restantes: ${3 - newAttemptCount}`);
+        }
+      } else {
+        // SEGURIDAD: Resetear contador en login exitoso
+        setAttemptCount(0);
+        localStorage.removeItem('blockUntil');
+      }
     } catch (err) {
-      setError('No se pudo iniciar sesión. Intenta de nuevo.');
+      setError('Error de conexión. Por favor intenta más tarde.');
       console.error(err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // SEGURIDAD: Registrar cuando el usuario empieza a llenar el formulario
+  const handleFormFocus = () => {
+    if (!window.formStartTime) {
+      window.formStartTime = Date.now();
     }
   };
 
@@ -54,7 +127,15 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
       </div>
 
       <form ref={formRef} onSubmit={handleLogin} className="login-form" autoComplete="off">
-        <input name="email" type="email" placeholder="Correo electrónico" required autoComplete="email" />
+        <input 
+          name="email" 
+          type="email" 
+          placeholder="Correo electrónico" 
+          required 
+          autoComplete="email"
+          onFocus={handleFormFocus}
+          disabled={isBlocked}
+        />
         <div className="password-input-container">
           <input
             name="password"
@@ -63,6 +144,8 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
             required
             autoComplete="current-password"
             onKeyDown={handleKeyDown}
+            onFocus={handleFormFocus}
+            disabled={isBlocked}
           />
           <button type="button" onClick={() => setShowPassword(!showPassword)} className="password-toggle-btn">
             {showPassword ? (
@@ -72,7 +155,9 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
             )}
           </button>
         </div>
-        <button type="submit" className="submit-button">Ingresar</button>
+        <button type="submit" className="submit-button" disabled={isBlocked}>
+          {isBlocked ? `Bloqueado (${blockTime}s)` : 'Ingresar'}
+        </button>
       </form>
 
       <div className="login-links">
@@ -100,6 +185,10 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
   const [message, setMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  // SEGURIDAD: Rate limiting para registro
+  const [registrationAttempts, setRegistrationAttempts] = useState(0);
+  const [isRegistrationBlocked, setIsRegistrationBlocked] = useState(false);
+
   const nameInputRef = useRef(null);
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
@@ -110,25 +199,59 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
     if (step === 3) passwordInputRef.current?.focus();
   }, [step]);
 
+  // SEGURIDAD: Verificar bloqueo de registro
+  useEffect(() => {
+    const blockUntil = localStorage.getItem('registerBlockUntil');
+    if (blockUntil && Date.now() < parseInt(blockUntil)) {
+      setIsRegistrationBlocked(true);
+    } else {
+      setIsRegistrationBlocked(false);
+      localStorage.removeItem('registerBlockUntil');
+    }
+  }, []);
+
   const handleInputChange = (e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  
   const nextStep = (e) => {
     e.preventDefault();
     if (step === 2 && !/^\S+@\S+\.\S+$/.test(formData.email)) {
       return setError('Por favor, ingresa un formato de correo válido.');
     }
-    if (step === 3 && formData.password.length < 6) {
-      return setError('La contraseña debe tener al menos 6 caracteres.');
+    if (step === 3 && formData.password.length < 8) {
+      return setError('La contraseña debe tener al menos 8 caracteres.');
     }
     setError(null);
     setStep((s) => s + 1);
   };
+  
   const prevStep = () => setStep((s) => s - 1);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    
+    // SEGURIDAD: Verificar si está bloqueado
+    if (isRegistrationBlocked) {
+      setError('Demasiados intentos de registro. Intenta más tarde.');
+      return;
+    }
+
+    // SEGURIDAD: Validaciones adicionales
+    if (formData.password.length < 8) {
+      setError('La contraseña debe tener al menos 8 caracteres.');
+      return;
+    }
+
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      setError('La contraseña debe contener al menos una mayúscula, una minúscula y un número.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
     setMessage(null);
+
+    // SEGURIDAD: Delay artificial
+    await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -146,7 +269,18 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
       });
 
       if (error) {
-        setError(error.message);
+        // SEGURIDAD: Incrementar contador
+        const newAttempts = registrationAttempts + 1;
+        setRegistrationAttempts(newAttempts);
+        
+        if (newAttempts >= 3) {
+          const blockUntil = Date.now() + (10 * 60000); // 10 minutos
+          localStorage.setItem('registerBlockUntil', blockUntil.toString());
+          setIsRegistrationBlocked(true);
+          setError('Demasiados intentos de registro. Intenta en 10 minutos.');
+        } else {
+          setError(error.message);
+        }
       } else {
         // ¡Importante!: NO insertes en 'profiles' desde el cliente.
         // El trigger 'handle_new_user' creará el perfil con estos metadatos.

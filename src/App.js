@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import { initHumanActivityDetection, detectBotBehavior } from './utils/security';
 
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -20,6 +21,20 @@ function AppContent() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  // SEGURIDAD: Inicializar protecciones al cargar la app
+  useEffect(() => {
+    // Detectar actividad humana
+    initHumanActivityDetection();
+    
+    // Verificar comportamiento de bot
+    setTimeout(() => {
+      if (detectBotBehavior()) {
+        console.warn('🤖 Comportamiento sospechoso detectado');
+        // Podrías redirigir o mostrar un captcha aquí
+      }
+    }, 2000);
+  }, []);
 
   // Chequeo inicial de sesión + listener único
   useEffect(() => {
