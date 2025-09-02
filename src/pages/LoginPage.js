@@ -1,14 +1,18 @@
+// src/pages/LoginPage.js
 import React, { useState, useRef, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import LoadingSpinner from '../components/LoadingSpinner';
 import logo from '../assets/monifly-logo.png';
 import { Link } from 'react-router-dom';
 
-// --- Componente de Login AHORA es INDEPENDIENTE ---
+// Si prefieres traerlo desde supabaseClient, expórtalo allí como SITE_URL.
+// Aquí lo resolvemos directo por si acaso:
+const SITE_URL = process.env.REACT_APP_SITE_URL || window.location.origin;
+
+/* ------------------------ LOGIN ------------------------ */
 const LoginForm = ({ setIsLoading, setIsRegistering }) => {
   const [error, setError] = useState(null);
   const formRef = useRef(null);
-  // SOLUCIÓN: Estado para la visibilidad de la contraseña
   const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
@@ -16,24 +20,26 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
     setError(null);
 
     const { email, password } = Object.fromEntries(new FormData(e.target));
-    
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      return setError("Por favor, ingresa un formato de correo válido.");
+      return setError('Por favor, ingresa un formato de correo válido.');
     }
 
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      setError("Credenciales inválidas. Verifica tu correo y contraseña.");
+    try {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) setError('Credenciales inválidas. Verifica tu correo y contraseña.');
+    } catch (err) {
+      setError('No se pudo iniciar sesión. Intenta de nuevo.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      formRef.current.requestSubmit();
+      formRef.current?.requestSubmit();
     }
   };
 
@@ -41,22 +47,21 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
     <div className="form-wrapper active">
       <img src={logo} alt="MoniFly Logo" className="logo-img" />
       <h2>Organiza tus finanzas y vuela ligero.</h2>
-      
+
       <div className="message-container">
-          {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message">{error}</p>}
       </div>
 
       <form ref={formRef} onSubmit={handleLogin} className="login-form" autoComplete="off">
         <input name="email" type="email" placeholder="Correo electrónico" required autoComplete="email" />
-        {/* SOLUCIÓN: Contenedor para el input y el icono */}
         <div className="password-input-container">
-          <input 
-            name="password" 
-            type={showPassword ? "text" : "password"} 
-            placeholder="Contraseña" 
-            required 
-            autoComplete="current-password" 
-            onKeyDown={handleKeyDown} 
+          <input
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Contraseña"
+            required
+            autoComplete="current-password"
+            onKeyDown={handleKeyDown}
           />
           <button type="button" onClick={() => setShowPassword(!showPassword)} className="password-toggle-btn">
             {showPassword ? (
@@ -68,11 +73,12 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
         </div>
         <button type="submit" className="submit-button">Ingresar</button>
       </form>
+
       <div className="login-links">
         <Link to="/forgot-password">¿Olvidaste tu contraseña?</Link>
-        <button 
-          type="button" 
-          className="link-button" 
+        <button
+          type="button"
+          className="link-button"
           onClick={(e) => {
             e.preventDefault();
             setIsRegistering(true);
@@ -85,40 +91,37 @@ const LoginForm = ({ setIsLoading, setIsRegistering }) => {
   );
 };
 
-// --- Componente de Registro AHORA es INDEPENDIENTE ---
+/* ------------------------ REGISTRO ------------------------ */
 const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({ name: '', email: '', password: '', country: 'CO' });
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
-  // SOLUCIÓN: Estado para la visibilidad de la contraseña
   const [showPassword, setShowPassword] = useState(false);
 
   const nameInputRef = useRef(null);
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
-  
+
   useEffect(() => {
     if (step === 1) nameInputRef.current?.focus();
     if (step === 2) emailInputRef.current?.focus();
     if (step === 3) passwordInputRef.current?.focus();
   }, [step]);
-  
-  const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const handleInputChange = (e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   const nextStep = (e) => {
     e.preventDefault();
     if (step === 2 && !/^\S+@\S+\.\S+$/.test(formData.email)) {
-      return setError("Por favor, ingresa un formato de correo válido.");
+      return setError('Por favor, ingresa un formato de correo válido.');
     }
     if (step === 3 && formData.password.length < 6) {
-      return setError("La contraseña debe tener al menos 6 caracteres.");
+      return setError('La contraseña debe tener al menos 6 caracteres.');
     }
     setError(null);
-    setStep(s => s + 1);
+    setStep((s) => s + 1);
   };
-  
-  const prevStep = () => setStep(s => s - 1);
+  const prevStep = () => setStep((s) => s - 1);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -126,68 +129,37 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
     setError(null);
     setMessage(null);
 
-    console.log('Intentando registrar usuario con:', { email: formData.email, name: formData.name });
-
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
+          // Metadatos para que el TRIGGER cree el perfil automáticamente
           data: {
             full_name: formData.name,
             country_code: formData.country,
-          }
-        }
+          },
+          // Para flujos de email (confirmación/reset), vuelve al front:
+          emailRedirectTo: `${SITE_URL}/update-password`,
+        },
       });
 
-      console.log('Respuesta de Supabase:', { data, error });
-
       if (error) {
-        console.error('Error de registro:', error);
         setError(error.message);
-      } else if (data.user) {
-        console.log('Usuario registrado exitosamente:', data.user);
-        
-        // Crear el perfil en la tabla profiles
-        console.log('Intentando crear perfil con datos:', { 
-          id: data.user.id, 
-          full_name: formData.name, 
-          country_code: formData.country 
-        });
-        
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .insert({ 
-            id: data.user.id, 
-            full_name: formData.name, 
-            country_code: formData.country 
-          });
-        
-        console.log('Resultado de inserción en profiles:', { profileData, profileError });
-        
-        if (profileError) {
-          console.error('Error creando perfil:', profileError);
-          setError(`Usuario creado pero error en perfil: ${profileError.message}`);
-        } else {
-          console.log('Perfil creado exitosamente');
-          setMessage("¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.");
-          // Cambiar automáticamente al formulario de login después de unos segundos
-          setTimeout(() => {
-            setIsRegistering(false);
-          }, 3000);
-        }
       } else {
-        console.log('No se recibió usuario ni error');
-        setError('No se pudo completar el registro. Inténtalo de nuevo.');
+        // ¡Importante!: NO insertes en 'profiles' desde el cliente.
+        // El trigger 'handle_new_user' creará el perfil con estos metadatos.
+        setMessage('¡Registro exitoso! Revisa tu correo para confirmar la cuenta.');
+        setTimeout(() => setIsRegistering(false), 2500);
       }
     } catch (err) {
       console.error('Error durante el registro:', err);
-      setError(`Error durante el registro: ${err.message}`);
+      setError('No se pudo completar el registro. Intenta de nuevo.');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
-  
+
   const handleKeyDown = (e, action) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -201,34 +173,53 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
       <h2>Crea tu cuenta en MoniFly</h2>
 
       <div className="message-container">
-          {error && <p className="error-message">{error}</p>}
-          {message && <p className="success-message">{message}</p>}
+        {error && <p className="error-message">{error}</p>}
+        {message && <p className="success-message">{message}</p>}
       </div>
 
       <form className="multi-step-form" onSubmit={handleRegister} autoComplete="off">
         <div className={`form-step ${step === 1 ? 'active' : ''}`}>
           <label>¿Cómo te llamas?</label>
-          <input ref={nameInputRef} type="text" name="name" value={formData.name} onChange={handleInputChange} required autoComplete="name" onKeyDown={(e) => handleKeyDown(e, nextStep)} />
+          <input
+            ref={nameInputRef}
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+            autoComplete="name"
+            onKeyDown={(e) => handleKeyDown(e, nextStep)}
+          />
           <button type="button" className="submit-button" onClick={nextStep}>Siguiente</button>
         </div>
+
         <div className={`form-step ${step === 2 ? 'active' : ''}`}>
           <label>Ingresa tu correo</label>
-          <input ref={emailInputRef} type="email" name="email" value={formData.email} onChange={handleInputChange} required autoComplete="email" onKeyDown={(e) => handleKeyDown(e, nextStep)} />
+          <input
+            ref={emailInputRef}
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            autoComplete="email"
+            onKeyDown={(e) => handleKeyDown(e, nextStep)}
+          />
           <button type="button" className="submit-button" onClick={nextStep}>Siguiente</button>
         </div>
+
         <div className={`form-step ${step === 3 ? 'active' : ''}`}>
           <label>Crea una contraseña segura</label>
-          {/* SOLUCIÓN: Contenedor para el input y el icono */}
           <div className="password-input-container">
-            <input 
-              ref={passwordInputRef} 
-              type={showPassword ? "text" : "password"}
-              name="password" 
-              value={formData.password} 
-              onChange={handleInputChange} 
-              required 
-              autoComplete="new-password" 
-              onKeyDown={(e) => handleKeyDown(e, nextStep)} 
+            <input
+              ref={passwordInputRef}
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              autoComplete="new-password"
+              onKeyDown={(e) => handleKeyDown(e, nextStep)}
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="password-toggle-btn">
               {showPassword ? (
@@ -241,17 +232,34 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
           <small className="input-hint">Mínimo 6 caracteres</small>
           <button type="button" className="submit-button" onClick={nextStep}>Siguiente</button>
         </div>
+
         <div className={`form-step ${step === 4 ? 'active' : ''}`}>
           <label>¿Cuál es tu país?</label>
           <select name="country" value={formData.country} onChange={handleInputChange}>
-            <option value="CO">Colombia</option> <option value="MX">México</option> <option value="ES">España</option> <option value="US">Estados Unidos</option>
+            <option value="CO">Colombia</option>
+            <option value="MX">México</option>
+            <option value="ES">España</option>
+            <option value="US">Estados Unidos</option>
           </select>
           <button type="submit" className="submit-button">Finalizar Registro</button>
         </div>
       </form>
+
       <div className="modal-nav-buttons">
-        {step > 1 && <button type="button" className="btn-secondary" onClick={prevStep}>Atrás</button>}
-        <button type="button" className="btn-secondary" onClick={() => {setIsRegistering(false); setError(null); setMessage(null);}}>
+        {step > 1 && (
+          <button type="button" className="btn-secondary" onClick={prevStep}>
+            Atrás
+          </button>
+        )}
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={() => {
+            setIsRegistering(false);
+            setError(null);
+            setMessage(null);
+          }}
+        >
           {step === 1 ? '¿Ya tienes cuenta?' : 'Cancelar'}
         </button>
       </div>
@@ -259,8 +267,7 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
   );
 };
 
-
-// --- Componente Principal ---
+/* ------------------------ PÁGINA PRINCIPAL ------------------------ */
 const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
@@ -285,4 +292,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
