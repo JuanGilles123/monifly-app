@@ -138,3 +138,95 @@
   to { transform: scale(1); opacity: 1; }
 }
 
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    max-width: 100%;
+    padding: 25px 20px;
+    margin: 20px;
+    border-radius: 15px;
+  }
+
+  .modal-content h2 {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  .form-step input,
+  .form-step select {
+    padding: 14px 15px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+
+  .form-step label {
+    font-size: 14px;
+  }
+
+  .form-step .submit-button {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .modal-nav-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-secondary {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .progress-bar-container {
+    margin: 15px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-backdrop {
+    align-items: flex-start;
+    padding-top: 50px;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 20px 15px;
+    margin: 10px;
+    border-radius: 12px;
+  }
+
+  .modal-content h2 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .form-step input,
+  .form-step select {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .form-step label {
+    font-size: 13px;
+  }
+
+  .form-step .submit-button {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .btn-secondary {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .progress-bar-container {
+    margin: 12px 0;
+  }
+
+  .progress-bar {
+    height: 6px;
+  }
+}
+

@@ -310,3 +310,107 @@ body {
 .form-step .password-input-container {
     width: 90%;
 }
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .login-page-container {
+    padding: 20px;
+    align-items: flex-start;
+    padding-top: 50px;
+  }
+
+  .login-form-container {
+    padding: 30px 20px;
+    max-width: 100%;
+    min-height: auto;
+  }
+
+  .logo-img {
+    width: 60px;
+  }
+
+  .login-form input,
+  .multi-step-form input,
+  .multi-step-form select {
+    padding: 14px 15px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+
+  .submit-button {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .form-step h3 {
+    font-size: 18px;
+  }
+
+  .password-input-container {
+    width: 100%;
+  }
+
+  .form-step .password-input-container {
+    width: 100%;
+  }
+
+  .login-links {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .modal-nav-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page-container {
+    padding: 15px;
+    padding-top: 30px;
+  }
+
+  .login-form-container {
+    padding: 25px 15px;
+    border-radius: 15px;
+  }
+
+  .logo-img {
+    width: 50px;
+    margin-bottom: 0.8rem;
+  }
+
+  .login-form,
+  .multi-step-form {
+    gap: 12px;
+  }
+
+  .login-form input,
+  .multi-step-form input,
+  .multi-step-form select {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .submit-button {
+    padding: 12px;
+  }
+
+  .form-step h3 {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .input-hint {
+    font-size: 12px;
+  }
+
+  .password-toggle-btn {
+    padding: 8px;
+  }
+}

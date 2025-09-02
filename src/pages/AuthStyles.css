@@ -125,3 +125,74 @@
   width: 80px;
   margin-bottom: 1rem;
 }
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .auth-page-container {
+    padding: 15px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .auth-form-container {
+    padding: 30px 20px;
+    max-width: 100%;
+    margin: 0 auto;
+    min-height: auto;
+  }
+
+  .logo-img {
+    width: 60px;
+  }
+
+  .auth-form input {
+    padding: 14px 15px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+
+  .auth-form .submit-button {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .auth-subtitle {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-page-container {
+    padding: 10px;
+    padding-top: 30px;
+  }
+
+  .auth-form-container {
+    padding: 25px 15px;
+    border-radius: 15px;
+  }
+
+  .logo-img {
+    width: 50px;
+    margin-bottom: 0.8rem;
+  }
+
+  .auth-form {
+    gap: 12px;
+  }
+
+  .auth-form input {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .auth-form .submit-button {
+    padding: 12px;
+  }
+
+  .error-message,
+  .success-message {
+    padding: 8px;
+    font-size: 13px;
+  }
+}

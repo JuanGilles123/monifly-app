@@ -113,3 +113,96 @@
   fill: #ef4444; /* Rojo al pasar el mouse */
 }
 
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .history-table-container {
+    padding: 20px 15px;
+    border-radius: 15px;
+    margin-top: 30px;
+  }
+
+  .history-table-container h3 {
+    font-size: 18px;
+  }
+
+  .history-table-container table {
+    font-size: 14px;
+  }
+
+  .history-table-container th {
+    padding: 10px 6px;
+    font-size: 0.8rem;
+  }
+
+  .history-table-container td {
+    padding: 12px 6px;
+  }
+
+  /* Ocultar algunas columnas en móvil para mejor experiencia */
+  .date-col,
+  .category-col {
+    display: none;
+  }
+
+  .actions-col {
+    width: 80px;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .action-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .history-table-container {
+    padding: 15px 10px;
+    margin-top: 25px;
+  }
+
+  .history-table-container h3 {
+    font-size: 16px;
+  }
+
+  .history-table-container table {
+    font-size: 13px;
+  }
+
+  .history-table-container th {
+    padding: 8px 4px;
+  }
+
+  .history-table-container td {
+    padding: 10px 4px;
+  }
+
+  .actions-col {
+    width: 60px;
+  }
+
+  .action-btn {
+    width: 28px;
+    height: 28px;
+    margin: 0 2px;
+  }
+
+  .action-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Hacer la tabla scrollable horizontalmente si es necesario */
+  .history-table-container {
+    overflow-x: auto;
+  }
+
+  .history-table-container table {
+    min-width: 300px;
+  }
+}
+

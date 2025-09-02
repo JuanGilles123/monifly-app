@@ -71,3 +71,82 @@
   position: relative;
   height: 180px; /* Altura para el gráfico */
 }
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .summary-card {
+    padding: 20px;
+    border-radius: 15px;
+  }
+
+  .summary-balance h2 {
+    font-size: 1.8rem;
+  }
+
+  .summary-details {
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .summary-item {
+    gap: 8px;
+  }
+
+  .summary-item p {
+    font-size: 0.85rem;
+  }
+
+  .summary-item strong {
+    font-size: 1rem;
+  }
+
+  .summary-chart {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-card {
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .summary-card h3 {
+    font-size: 16px;
+  }
+
+  .summary-balance span {
+    font-size: 0.9rem;
+  }
+
+  .summary-balance h2 {
+    font-size: 1.6rem;
+  }
+
+  .summary-details {
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .summary-item {
+    gap: 6px;
+  }
+
+  .summary-item .dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .summary-item p {
+    font-size: 0.8rem;
+  }
+
+  .summary-item strong {
+    font-size: 0.9rem;
+  }
+
+  .summary-chart {
+    height: 140px;
+  }
+}

@@ -146,3 +146,69 @@
   }
 }
 
+/* === RESPONSIVE DESIGN MEJORADO === */
+@media (max-width: 1024px) {
+  .dashboard-grid-container {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .dashboard-summary {
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    padding-left: 0;
+    padding-top: 20px;
+    order: 2;
+  }
+
+  .dashboard-main-content {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid-container {
+    padding: 15px;
+    height: auto;
+    min-height: calc(100vh - 60px);
+  }
+
+  .dashboard-main-content,
+  .dashboard-summary {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-actions-grid {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-grid-container {
+    padding: 10px;
+  }
+
+  .dashboard-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .dashboard-actions-grid {
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .dashboard-summary {
+    padding-top: 15px;
+  }
+}
+

@@ -99,3 +99,60 @@
   color: var(--card-bg-color);
 }
 
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    top: 20px;
+    right: 20px;
+    width: 25px;
+    height: 20px;
+  }
+
+  .line {
+    height: 2px;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-width: 320px;
+    padding-top: 70px;
+  }
+
+  .sidebar nav a {
+    padding: 15px 20px;
+    font-size: 16px;
+  }
+
+  .logout-button {
+    width: 90%;
+    padding: 12px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hamburger-menu {
+    top: 15px;
+    right: 15px;
+    width: 22px;
+    height: 18px;
+  }
+
+  .sidebar {
+    width: 100vw;
+    padding-top: 60px;
+  }
+
+  .sidebar nav a {
+    padding: 12px 15px;
+    font-size: 15px;
+  }
+
+  .logout-button {
+    width: 95%;
+    padding: 10px;
+    font-size: 14px;
+    margin-top: 15px;
+  }
+}
+
