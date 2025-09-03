@@ -57,16 +57,19 @@ function AppContent() {
     })();
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
+      console.log('🔄 Auth state change:', event, sess?.user?.email || 'no user');
       setSession(sess ?? null);
 
       switch (event) {
         case 'PASSWORD_RECOVERY':
           // siempre permitir llegar a /update-password
+          console.log('🔑 Redirecting to password recovery');
           navigate('/update-password', { replace: true });
           break;
 
         case 'SIGNED_IN':
           // si viene desde login o forgot, mándalo al dashboard
+          console.log('✅ User signed in, current path:', location.pathname);
           if (location.pathname === '/login' || location.pathname === '/forgot-password') {
             navigate('/', { replace: true });
           }
@@ -74,10 +77,12 @@ function AppContent() {
           break;
 
         case 'SIGNED_OUT':
+          console.log('🚪 User signed out, redirecting to login');
           navigate('/login', { replace: true });
           break;
 
         default:
+          console.log('🔄 Auth event:', event);
           break;
       }
     });

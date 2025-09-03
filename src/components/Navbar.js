@@ -12,9 +12,33 @@ const Navbar = () => {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toggleMenu(); // Cierra el menú
-    navigate('/login'); // Redirige al login
+    try {
+      console.log('🚪 Iniciando cierre de sesión...');
+      
+      // Cerrar el menú inmediatamente para feedback visual
+      toggleMenu();
+      
+      // Realizar el sign out
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('❌ Error al cerrar sesión:', error);
+        alert('Error al cerrar sesión: ' + error.message);
+        return;
+      }
+      
+      console.log('✅ Sesión cerrada exitosamente');
+      
+      // Limpiar localStorage por si acaso
+      localStorage.removeItem('supabase.auth.token');
+      
+      // Forzar navegación inmediata
+      navigate('/login', { replace: true });
+      
+    } catch (err) {
+      console.error('❌ Error inesperado al cerrar sesión:', err);
+      alert('Error inesperado al cerrar sesión');
+    }
   };
 
   return (
