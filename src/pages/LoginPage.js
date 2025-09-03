@@ -364,7 +364,7 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
               )}
             </button>
           </div>
-          <small className="input-hint">Mínimo 6 caracteres</small>
+          <small className="input-hint">Mínimo 8 caracteres, con mayúscula, minúscula y número</small>
           <button type="button" className="submit-button" onClick={nextStep}>Siguiente</button>
         </div>
 
