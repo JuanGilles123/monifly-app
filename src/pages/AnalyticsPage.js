@@ -30,6 +30,7 @@ const BAR_EXPENSE_BORDER = '#B91C1C';
 export default function AnalyticsPage({ isDarkMode }) {
   const [loading, setLoading] = useState(true);
   const [rows, setRows] = useState([]);
+  const [goals, setGoals] = useState([]);
   const [authError, setAuthError] = useState('');
 
   useEffect(() => {
@@ -64,6 +65,13 @@ export default function AnalyticsPage({ isDarkMode }) {
         .eq('user_id', userId)
         .order('created_at', { ascending: true });
 
+      // Cargar metas del usuario
+      const { data: goalsData, error: goalsError } = await supabase
+        .from('goals')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
       if (!active) return;
 
       if (error) {
@@ -71,6 +79,13 @@ export default function AnalyticsPage({ isDarkMode }) {
         setRows([]);
       } else {
         setRows(data || []);
+      }
+
+      if (goalsError) {
+        console.error('Error cargando metas:', goalsError);
+        setGoals([]);
+      } else {
+        setGoals(goalsData || []);
       }
       setLoading(false);
     };
@@ -112,6 +127,38 @@ export default function AnalyticsPage({ isDarkMode }) {
     return { income, expense, balance: income - expense };
   }, [rows]);
 
+  // --- Estadísticas de metas ---
+  const goalsStats = useMemo(() => {
+    const activeGoals = goals.filter(g => g.status === 'active');
+    const completedGoals = goals.filter(g => g.status === 'completed');
+    
+    let totalSaved = 0;
+    let totalTarget = 0;
+    let totalProgress = 0;
+    
+    activeGoals.forEach(goal => {
+      const saved = Number(goal.current_saved || 0);
+      const target = Number(goal.target_amount || 0);
+      totalSaved += saved;
+      totalTarget += target;
+      if (target > 0) {
+        totalProgress += (saved / target) * 100;
+      }
+    });
+    
+    const avgProgress = activeGoals.length > 0 ? totalProgress / activeGoals.length : 0;
+    
+    return {
+      totalGoals: goals.length,
+      activeGoals: activeGoals.length,
+      completedGoals: completedGoals.length,
+      totalSaved,
+      totalTarget,
+      avgProgress: Math.round(avgProgress),
+      completionRate: goals.length > 0 ? Math.round((completedGoals.length / goals.length) * 100) : 0
+    };
+  }, [goals]);
+
   // --- Datos para gráficos ---
   const pieLabels = Object.keys(expensesByCategory);
   const pieValues = Object.values(expensesByCategory);
@@ -149,6 +196,32 @@ export default function AnalyticsPage({ isDarkMode }) {
     ],
   };
 
+  // --- Datos para gráfico de metas ---
+  const activeGoals = goals.filter(g => g.status === 'active').slice(0, 6); // Mostrar máximo 6 metas
+  
+  const goalsProgressData = {
+    labels: activeGoals.map(g => g.name.length > 15 ? g.name.substring(0, 15) + '...' : g.name),
+    datasets: [
+      {
+        label: 'Progreso (%)',
+        data: activeGoals.map(g => {
+          const current = Number(g.current_saved || 0);
+          const target = Number(g.target_amount || 0);
+          return target > 0 ? Math.round((current / target) * 100) : 0;
+        }),
+        backgroundColor: activeGoals.map((_, i) => {
+          const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4'];
+          return colors[i % colors.length];
+        }),
+        borderColor: activeGoals.map((_, i) => {
+          const colors = ['#1D4ED8', '#047857', '#D97706', '#B91C1C', '#7C3AED', '#0891B2'];
+          return colors[i % colors.length];
+        }),
+        borderWidth: 2,
+      },
+    ],
+  };
+
   // --- Estilos de gráficos según tema ---
   const textColor = isDarkMode ? '#e0e0e0' : '#444';
   const gridColor = isDarkMode ? '#444' : '#ddd';
@@ -177,6 +250,69 @@ export default function AnalyticsPage({ isDarkMode }) {
         grid: { color: 'transparent' },
       },
     },
+  };
+
+  const chartOptionsGoals = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        labels: { color: textColor },
+        display: true 
+      },
+      tooltip: {
+        callbacks: {
+          label: (ctx) => {
+            const goalIndex = ctx.dataIndex;
+            const goal = activeGoals[goalIndex];
+            if (goal) {
+              const current = Number(goal.current_saved || 0);
+              const target = Number(goal.target_amount || 0);
+              return [
+                `${goal.name}`,
+                `Progreso: ${ctx.parsed.y}%`,
+                `Ahorrado: ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(current)}`,
+                `Meta: ${new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(target)}`
+              ];
+            }
+            return `${ctx.dataset.label}: ${ctx.parsed.y}%`;
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: Math.max(100, Math.max(...activeGoals.map(g => {
+          const current = Number(g.current_saved || 0);
+          const target = Number(g.target_amount || 0);
+          return target > 0 ? Math.ceil((current / target) * 100) : 0;
+        })) + 10),
+        ticks: { 
+          color: textColor, 
+          callback: (v) => `${v}%`,
+          stepSize: 10
+        },
+        grid: { color: gridColor },
+      },
+      x: {
+        ticks: { 
+          color: textColor,
+          maxRotation: 45
+        },
+        grid: { color: 'transparent' },
+      },
+    },
+    elements: {
+      bar: {
+        borderRadius: 4,
+        borderSkipped: false,
+      }
+    },
+    animation: {
+      duration: 1000,
+      easing: 'easeOutBounce'
+    }
   };
 
   return (
@@ -208,6 +344,26 @@ export default function AnalyticsPage({ isDarkMode }) {
             </div>
           </div>
 
+          {goals.length > 0 && (
+            <div className="analytics-cards-grid">
+              <div className="analytics-card">
+                <h3>Metas Activas</h3>
+                <p className="big">{goalsStats.activeGoals}</p>
+                <p className="small">de {goalsStats.totalGoals} total</p>
+              </div>
+              <div className="analytics-card">
+                <h3>Total Ahorrado</h3>
+                <p className="big">{fmtCOP(goalsStats.totalSaved)}</p>
+                <p className="small">Meta: {fmtCOP(goalsStats.totalTarget)}</p>
+              </div>
+              <div className="analytics-card">
+                <h3>Progreso Promedio</h3>
+                <p className="big">{goalsStats.avgProgress}%</p>
+                <p className="small">{goalsStats.completedGoals} completadas</p>
+              </div>
+            </div>
+          )}
+
           <div className="chart-wrapper">
             <h2>Gastos por Categoría</h2>
             {pieValues.length === 0 ? (
@@ -224,6 +380,26 @@ export default function AnalyticsPage({ isDarkMode }) {
             <div style={{ height: 380 }}>
               <Bar data={barData} options={chartOptions} />
             </div>
+          </div>
+
+          <div className="chart-wrapper">
+            <h2>Progreso de Metas Activas</h2>
+            {activeGoals.length === 0 ? (
+              <div className="analytics-card">
+                {goals.length === 0 
+                  ? "Aún no tienes metas creadas. Ve a la sección de Metas para crear una."
+                  : "No tienes metas activas para mostrar."
+                }
+              </div>
+            ) : (
+              <div style={{ height: 380 }} key={`goals-chart-${activeGoals.length}-${activeGoals.map(g => `${g.id}-${g.current_saved}`).join('-')}`}>
+                <Bar 
+                  data={goalsProgressData} 
+                  options={chartOptionsGoals} 
+                  key={`bar-${Date.now()}`}
+                />
+              </div>
+            )}
           </div>
         </>
       )}

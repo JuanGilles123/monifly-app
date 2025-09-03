@@ -32,6 +32,13 @@
   margin: 8px 0 0;
 }
 
+.analytics-card .small {
+  font-size: 0.85rem;
+  color: var(--text-secondary-color);
+  margin: 4px 0 0;
+  opacity: 0.8;
+}
+
 /* Contenedor de gráficos */
 .chart-wrapper {
   background-color: var(--card-bg-color);

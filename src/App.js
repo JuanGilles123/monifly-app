@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProfilePage from './pages/ProfilePage';
+import GoalsPage from './pages/GoalsPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import UpdatePasswordPage from './pages/UpdatePasswordPage';
 import Navbar from './components/Navbar';
@@ -180,6 +181,14 @@ function AppContent() {
           element={
             <Protected>
               <ProfilePage session={session} isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+            </Protected>
+          }
+        />
+        <Route
+          path="/goals"
+          element={
+            <Protected>
+              <GoalsPage session={session} isDarkMode={isDarkMode} />
             </Protected>
           }
         />
