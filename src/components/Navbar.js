@@ -18,26 +18,60 @@ const Navbar = () => {
       // Cerrar el menú inmediatamente para feedback visual
       toggleMenu();
       
-      // Realizar el sign out
+      // Verificar si hay sesión activa antes de intentar cerrar
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        console.log('⚠️ No hay sesión activa, limpiando estado local');
+        
+        // Si no hay sesión, simplemente limpiar todo localmente
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Forzar navegación
+        navigate('/login', { replace: true });
+        return;
+      }
+      
+      console.log('📝 Sesión encontrada, cerrando normalmente...');
+      
+      // Realizar el sign out solo si hay sesión
       const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error('❌ Error al cerrar sesión:', error);
+        
+        // Si es error de sesión faltante, limpiar localmente
+        if (error.message.includes('Auth session missing') || error.message.includes('session missing')) {
+          console.log('🧹 Limpiando sesión localmente debido a error de sesión');
+          localStorage.clear();
+          sessionStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+        }
+        
+        // Para otros errores, mostrar mensaje
         alert('Error al cerrar sesión: ' + error.message);
         return;
       }
       
       console.log('✅ Sesión cerrada exitosamente');
       
-      // Limpiar localStorage por si acaso
-      localStorage.removeItem('supabase.auth.token');
+      // Limpiar storage por seguridad
+      localStorage.clear();
+      sessionStorage.clear();
       
       // Forzar navegación inmediata
       navigate('/login', { replace: true });
       
     } catch (err) {
       console.error('❌ Error inesperado al cerrar sesión:', err);
-      alert('Error inesperado al cerrar sesión');
+      
+      // En caso de error inesperado, limpiar todo y redirigir
+      console.log('🧹 Limpiando todo debido a error inesperado');
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/login', { replace: true });
     }
   };
 

@@ -48,37 +48,61 @@ function AppContent() {
   // Chequeo inicial de sesión + listener único
   useEffect(() => {
     let mounted = true;
+    
     (async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (mounted) {
-        if (!error) setSession(data.session ?? null);
-        setLoading(false);
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (mounted) {
+          if (error) {
+            console.error('❌ Error getting session:', error);
+            setSession(null);
+          } else {
+            setSession(data.session ?? null);
+          }
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('❌ Unexpected error getting session:', err);
+        if (mounted) {
+          setSession(null);
+          setLoading(false);
+        }
       }
     })();
 
     const { data: sub } = supabase.auth.onAuthStateChange((event, sess) => {
       console.log('🔄 Auth state change:', event, sess?.user?.email || 'no user');
-      setSession(sess ?? null);
+      
+      // Validar que la sesión es válida antes de setearla
+      if (sess && sess.access_token && sess.user) {
+        setSession(sess);
+      } else {
+        setSession(null);
+      }
 
       switch (event) {
         case 'PASSWORD_RECOVERY':
-          // siempre permitir llegar a /update-password
           console.log('🔑 Redirecting to password recovery');
           navigate('/update-password', { replace: true });
           break;
 
         case 'SIGNED_IN':
-          // si viene desde login o forgot, mándalo al dashboard
           console.log('✅ User signed in, current path:', location.pathname);
           if (location.pathname === '/login' || location.pathname === '/forgot-password') {
             navigate('/', { replace: true });
           }
-          // OJO: NO redirigir si está en /update-password
           break;
 
         case 'SIGNED_OUT':
           console.log('🚪 User signed out, redirecting to login');
+          // Limpiar estado local
+          localStorage.clear();
+          sessionStorage.clear();
           navigate('/login', { replace: true });
+          break;
+
+        case 'TOKEN_REFRESHED':
+          console.log('🔄 Token refreshed');
           break;
 
         default:
