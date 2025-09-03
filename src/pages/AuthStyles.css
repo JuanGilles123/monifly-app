@@ -188,6 +188,31 @@ html, body {
 /* ===== Mensajes ===== */
 .message-container { margin: 15px 0; min-height: 20px; width:100%; }
 
+.info-banner {
+  background: linear-gradient(135deg, #e3f2fd, #f0f8ff);
+  border: 1px solid #2196f3;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin: 15px 0 10px 0;
+  text-align: center;
+}
+
+.info-banner p {
+  color: #1565c0;
+  font-size: 14px;
+  margin: 0;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .info-banner {
+  background: linear-gradient(135deg, #0d1b2a, #1a2332);
+  border-color: #3b82f6;
+}
+
+[data-theme="dark"] .info-banner p {
+  color: #60a5fa;
+}
+
 .error-message {
   color: #721c24;
   background-color: #f8d7da;
@@ -201,11 +226,29 @@ html, body {
 .success-message {
   color: #155724;
   background-color: #d4edda;
-  border: 1px solid #c3e6cb;
-  border-radius: 8px;
-  padding: 10px;
-  margin: 10px 0;
-  font-size: 14px;
+  border: 2px solid #28a745;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin: 15px 0;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+  animation: successPulse 0.5s ease-out;
+  line-height: 1.4;
+}
+
+@keyframes successPulse {
+  0% { transform: scale(0.95); opacity: 0; }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+[data-theme="dark"] .success-message {
+  color: #4ade80;
+  background-color: #064e3b;
+  border-color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 /* ===== Password con icono (ojo) ===== */

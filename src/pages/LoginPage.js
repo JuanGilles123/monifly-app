@@ -284,8 +284,14 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
       } else {
         // ¡Importante!: NO insertes en 'profiles' desde el cliente.
         // El trigger 'handle_new_user' creará el perfil con estos metadatos.
-        setMessage('¡Registro exitoso! Revisa tu correo para confirmar la cuenta.');
-        setTimeout(() => setIsRegistering(false), 2500);
+        setMessage('✅ ¡Cuenta creada exitosamente! 📧 Revisa tu bandeja de entrada (y carpeta de spam) para confirmar tu email antes de iniciar sesión.');
+        
+        // Limpiar el formulario
+        setFormData({ name: '', email: '', password: '', country: 'CO' });
+        setStep(1);
+        
+        // Mostrar mensaje por más tiempo para que lo lean bien
+        setTimeout(() => setIsRegistering(false), 5000);
       }
     } catch (err) {
       console.error('Error durante el registro:', err);
@@ -306,6 +312,11 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
     <div className="form-wrapper active">
       <img src={logo} alt="MoniFly Logo" className="logo-img" />
       <h2>Crea tu cuenta en MoniFly</h2>
+
+      {/* Información sobre confirmación de email */}
+      <div className="info-banner">
+        <p>📧 Necesitarás confirmar tu email antes de poder iniciar sesión</p>
+      </div>
 
       <div className="message-container">
         {error && <p className="error-message">{error}</p>}
