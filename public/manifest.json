@@ -10,12 +10,26 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "maskable any"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "logo192-dark.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "logo512-dark.png", 
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable any"
     }
   ],
   "start_url": ".",
@@ -24,5 +38,8 @@
   "background_color": "#f7f9fc",
   "orientation": "portrait-primary",
   "scope": "/",
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "categories": ["finance", "productivity"],
+  "screenshots": [],
+  "shortcuts": []
 }

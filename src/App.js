@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import { initHumanActivityDetection, detectBotBehavior } from './utils/security';
+import { setupThemeListener } from './utils/themeUtils';
 
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -27,6 +28,9 @@ function AppContent() {
     // Detectar actividad humana
     initHumanActivityDetection();
     
+    // Configurar listener para cambios de tema (favicon dinámico)
+    const cleanupThemeListener = setupThemeListener();
+    
     // Verificar comportamiento de bot
     setTimeout(() => {
       if (detectBotBehavior()) {
@@ -34,6 +38,11 @@ function AppContent() {
         // Podrías redirigir o mostrar un captcha aquí
       }
     }, 2000);
+
+    // Cleanup function
+    return () => {
+      cleanupThemeListener();
+    };
   }, []);
 
   // Chequeo inicial de sesión + listener único
