@@ -67,6 +67,21 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
 
   useEffect(() => {
     fetchUserData();
+
+    // NUEVO: Escuchar actualizaciones de perfil
+    const handleProfileUpdate = (event) => {
+      const { fullName } = event.detail;
+      setProfile(prev => ({
+        ...prev,
+        full_name: fullName
+      }));
+    };
+
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+    };
   }, [fetchUserData]);
 
   const handleDelete = async (transactionId) => {

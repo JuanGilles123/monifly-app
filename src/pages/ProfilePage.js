@@ -134,6 +134,12 @@ const ProfilePage = ({ isDarkMode, toggleDarkMode }) => {
         name: formData.name
       }));
 
+      // NUEVO: Forzar actualización del perfil globalmente
+      // Esto actualizará la información en todos los componentes
+      window.dispatchEvent(new CustomEvent('profileUpdated', {
+        detail: { fullName: formData.name }
+      }));
+
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
 
