@@ -108,24 +108,33 @@ const ProfilePage = ({ isDarkMode, toggleDarkMode }) => {
 
       console.log('Intentando actualizar perfil para usuario:', user.id);
 
-      // Intentar actualizar en la tabla profiles (si existe y funciona)
+      // Usar la función segura de Supabase para actualizar perfil
       try {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({ 
-            id: user.id,
-            full_name: formData.name,
-            country_code: 'CO'
+        const { data, error: profileError } = await supabase
+          .rpc('update_user_profile', {
+            new_full_name: formData.name
           });
 
         if (profileError) {
-          console.error('Error en profiles table:', profileError);
-          // Continuar sin fallar, por ahora solo actualizamos localmente
-        } else {
-          console.log('Perfil actualizado en la tabla profiles');
+          console.error('Error al actualizar perfil:', profileError);
+          // Si hay error, intentar método directo como fallback
+          const { error: fallbackError } = await supabase
+            .from('profiles')
+            .update({ 
+              full_name: formData.name
+            })
+            .eq('id', user.id);
+
+          if (fallbackError) {
+            console.error('Error en fallback:', fallbackError);
+            throw new Error('No se pudo actualizar el perfil: ' + (fallbackError.message || 'Error desconocido'));
+          }
         }
+
+        console.log('Perfil actualizado exitosamente');
       } catch (profileTableError) {
-        console.log('Tabla profiles no disponible, actualizando solo localmente:', profileTableError);
+        console.log('Error al actualizar perfil:', profileTableError);
+        throw new Error('Error al actualizar perfil: ' + (profileTableError.message || 'Error desconocido'));
       }
 
       // Actualizar el estado local independientemente
