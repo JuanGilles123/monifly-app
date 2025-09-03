@@ -213,6 +213,59 @@ html, body {
   color: #60a5fa;
 }
 
+.duplicate-email-options {
+  margin-top: 15px;
+  padding: 15px;
+  background: linear-gradient(135deg, #fff3cd, #fef9e7);
+  border: 1px solid #f5c842;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.duplicate-email-options p {
+  color: #8a6d00;
+  font-size: 14px;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+}
+
+.duplicate-email-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.link-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.link-button:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .duplicate-email-options {
+  background: linear-gradient(135deg, #2d2a24, #3a3529);
+  border-color: #d4a853;
+}
+
+[data-theme="dark"] .duplicate-email-options p {
+  color: #f4d03f;
+}
+
 .error-message {
   color: #721c24;
   background-color: #f8d7da;

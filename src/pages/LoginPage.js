@@ -184,6 +184,7 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [duplicateEmail, setDuplicateEmail] = useState(null); // Para detectar emails duplicados
 
   // SEGURIDAD: Rate limiting para registro
   const [registrationAttempts, setRegistrationAttempts] = useState(0);
@@ -229,6 +230,11 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
   const handleRegister = async (e) => {
     e.preventDefault();
     
+    // Limpiar estados previos
+    setError(null);
+    setMessage(null);
+    setDuplicateEmail(null);
+    
     // SEGURIDAD: Verificar si está bloqueado
     if (isRegistrationBlocked) {
       setError('Demasiados intentos de registro. Intenta más tarde.');
@@ -269,18 +275,51 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
       });
 
       if (error) {
-        // SEGURIDAD: Incrementar contador
-        const newAttempts = registrationAttempts + 1;
-        setRegistrationAttempts(newAttempts);
+        console.log('Error de registro:', error); // Para debugging
         
-        if (newAttempts >= 3) {
-          const blockUntil = Date.now() + (10 * 60000); // 10 minutos
-          localStorage.setItem('registerBlockUntil', blockUntil.toString());
-          setIsRegistrationBlocked(true);
-          setError('Demasiados intentos de registro. Intenta en 10 minutos.');
+        // DETECTAR ERRORES ESPECÍFICOS
+        let errorMessage = '';
+        
+        if (error.message.includes('User already registered') || 
+            error.message.includes('already registered') ||
+            error.message.includes('duplicate') ||
+            error.code === 'email_already_exists') {
+          errorMessage = '⚠️ Ya existe una cuenta con este correo electrónico.';
+          setDuplicateEmail(formData.email); // Guardar el email para mostrar opciones
+        } else if (error.message.includes('Invalid email') || 
+                   (error.message.includes('email') && error.message.includes('invalid'))) {
+          errorMessage = '❌ El formato del correo electrónico no es válido.';
+          setDuplicateEmail(null);
+        } else if (error.message.includes('Password') || 
+                   error.message.includes('password')) {
+          errorMessage = '🔒 La contraseña debe tener al menos 6 caracteres.';
+          setDuplicateEmail(null);
+        } else if (error.message.includes('rate') || 
+                   error.message.includes('too many')) {
+          errorMessage = '⏳ Demasiados intentos. Espera unos minutos antes de intentar de nuevo.';
+          setDuplicateEmail(null);
         } else {
-          setError(error.message);
+          // Mensaje genérico para otros errores
+          errorMessage = `❌ Error: ${error.message}`;
+          setDuplicateEmail(null);
         }
+        
+        // SEGURIDAD: Incrementar contador solo si no es email duplicado
+        if (!error.message.includes('already registered') && 
+            !error.message.includes('User already registered')) {
+          const newAttempts = registrationAttempts + 1;
+          setRegistrationAttempts(newAttempts);
+          
+          if (newAttempts >= 3) {
+            const blockUntil = Date.now() + (10 * 60000); // 10 minutos
+            localStorage.setItem('registerBlockUntil', blockUntil.toString());
+            setIsRegistrationBlocked(true);
+            setError('🚫 Demasiados intentos de registro. Intenta en 10 minutos.');
+            return;
+          }
+        }
+        
+        setError(errorMessage);
       } else {
         // ¡Importante!: NO insertes en 'profiles' desde el cliente.
         // El trigger 'handle_new_user' creará el perfil con estos metadatos.
@@ -319,7 +358,28 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
       </div>
 
       <div className="message-container">
-        {error && <p className="error-message">{error}</p>}
+        {error && (
+          <div>
+            <p className="error-message">{error}</p>
+            {duplicateEmail && (
+              <div className="duplicate-email-options">
+                <p>Ya tienes una cuenta con <strong>{duplicateEmail}</strong></p>
+                <div className="duplicate-email-actions">
+                  <button 
+                    type="button"
+                    className="link-button"
+                    onClick={() => setIsRegistering(false)}
+                  >
+                    🔑 Iniciar Sesión
+                  </button>
+                  <Link to="/forgot-password" className="link-button">
+                    🔄 Recuperar Contraseña
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         {message && <p className="success-message">{message}</p>}
       </div>
 
