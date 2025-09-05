@@ -89,6 +89,29 @@
 }
 
 /* Responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Reglas específicas para tablet/iPad */
+  .streak-display {
+    padding: 10px 14px;
+    gap: 6px;
+    min-width: 90px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .streak-symbol {
+    font-size: 1.4rem;
+  }
+  
+  .streak-number {
+    font-size: 1.1rem;
+  }
+  
+  .streak-label {
+    font-size: 0.65rem;
+  }
+}
+
 @media (max-width: 768px) {
   .streak-display {
     padding: 10px 12px;
