@@ -3,7 +3,7 @@ import { supabase } from '../supabaseClient';
 import StreakAnimation from './StreakAnimation';
 import './StreakCounter.css';
 
-const StreakCounter = ({ userId, onStreakUpdate }) => {
+const StreakCounter = ({ userId, onStreakUpdate, isDarkMode }) => {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const [streakLevel, setStreakLevel] = useState('basic');
@@ -134,7 +134,7 @@ const StreakCounter = ({ userId, onStreakUpdate }) => {
   };
 
   return (
-    <div className="streak-counter" onClick={handleStreakClick}>
+    <div className={`streak-counter ${isDarkMode ? 'dark' : 'light'}`} onClick={handleStreakClick}>
       <div className={`streak-display ${streakInfo.level}`}>
         <div className="streak-symbol" style={{ color: streakInfo.color }}>
           {streakInfo.symbol}
@@ -152,6 +152,7 @@ const StreakCounter = ({ userId, onStreakUpdate }) => {
         level={streakInfo.level}
         symbol={streakInfo.symbol}
         color={streakInfo.color}
+        isDarkMode={isDarkMode}
         onComplete={() => {
           setShowAnimation(false);
         }}

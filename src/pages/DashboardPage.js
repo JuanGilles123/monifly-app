@@ -164,7 +164,7 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
               <p>¿Qué movimiento quieres registrar hoy?</p>
             </div>
             <div className="header-actions">
-              <StreakCounter userId={session.user.id} />
+              <StreakCounter userId={session.user.id} isDarkMode={isDarkMode} />
             </div>
           </div>
         </header>

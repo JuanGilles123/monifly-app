@@ -294,3 +294,47 @@
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   }
 }
+
+/* Estilos específicos para modo claro */
+.streak-animation.light .streak-overlay {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.streak-animation.light .streak-count-display {
+  color: #1e293b;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.streak-animation.light .streak-days-label {
+  color: rgba(30, 41, 59, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.streak-animation.light .streak-message {
+  color: #1e293b;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos específicos para modo oscuro */
+.streak-animation.dark .streak-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.streak-animation.dark .streak-count-display {
+  color: #fff;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
+}
+
+.streak-animation.dark .streak-days-label {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.streak-animation.dark .streak-message {
+  color: #fff;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
+}

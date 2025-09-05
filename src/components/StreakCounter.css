@@ -140,3 +140,67 @@
     background: rgba(0, 0, 0, 0.4);
   }
 }
+
+/* Estilos específicos para modo claro */
+.streak-counter.light .streak-display {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.streak-counter.light .streak-display:hover {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.streak-counter.light .streak-number {
+  color: #1e293b;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.streak-counter.light .streak-label {
+  color: rgba(30, 41, 59, 0.7);
+}
+
+/* Niveles específicos para modo claro */
+.streak-counter.light .streak-display.basic {
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 20px rgba(34, 197, 94, 0.08);
+}
+
+.streak-counter.light .streak-display.solid {
+  border-color: rgba(0, 191, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 191, 255, 0.08);
+}
+
+.streak-counter.light .streak-display.golden {
+  border-color: rgba(255, 165, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 165, 0, 0.08);
+}
+
+.streak-counter.light .streak-display.legendary {
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.08);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.05), rgba(255, 165, 0, 0.02));
+}
+
+/* Estilos específicos para modo oscuro */
+.streak-counter.dark .streak-display {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.streak-counter.dark .streak-display:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.streak-counter.dark .streak-number {
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.streak-counter.dark .streak-label {
+  color: rgba(255, 255, 255, 0.8);
+}

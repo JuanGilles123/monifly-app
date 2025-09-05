@@ -7,6 +7,7 @@ const StreakAnimation = ({
   level,
   symbol,
   color,
+  isDarkMode,
   onComplete 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -58,7 +59,7 @@ const StreakAnimation = ({
   };
 
   return (
-    <div className={`streak-animation ${isVisible ? 'show' : 'hide'}`}>
+    <div className={`streak-animation ${isVisible ? 'show' : 'hide'} ${isDarkMode ? 'dark' : 'light'}`}>
       {/* Overlay */}
       <div className="streak-overlay" />
       
