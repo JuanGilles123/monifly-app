@@ -189,7 +189,7 @@
 
 .animation-text {
   position: absolute;
-  bottom: clamp(30px, 8vh, 60px);
+  bottom: clamp(40px, 10vh, 80px);
   left: 50%;
   transform: translateX(-50%);
   color: #fff;
@@ -201,6 +201,7 @@
   z-index: 10;
   padding: 0 20px;
   max-width: 90vw;
+  line-height: 1.4;
 }
 
 /* Animaciones mejoradas y responsivas */
@@ -322,8 +323,23 @@
   }
   
   .animation-text {
-    bottom: clamp(20px, 6vh, 40px);
+    bottom: clamp(50px, 12vh, 100px);
     padding: 0 15px;
+    font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+  }
+}
+
+/* Ajustes especiales para dispositivos con pantallas muy altas (como iPhone 12 Pro Max) */
+@media (min-height: 800px) and (max-width: 480px) {
+  .animation-text {
+    bottom: clamp(60px, 8vh, 120px);
+  }
+}
+
+/* Ajustes adicionales para pantallas ultra altas */
+@media (min-height: 900px) and (max-width: 480px) {
+  .animation-text {
+    bottom: clamp(80px, 10vh, 140px);
   }
 }
 
@@ -331,5 +347,18 @@
 @media (max-width: 768px) {
   .transaction-animation {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  
+  .animation-text {
+    bottom: calc(clamp(40px, 10vh, 80px) + env(safe-area-inset-bottom));
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Ajustes específicos para iOS en modo landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+  .animation-text {
+    bottom: clamp(30px, 8vh, 50px);
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   }
 }
