@@ -1,0 +1,296 @@
+/* Animación de Rachas */
+.streak-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.streak-animation.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.streak-animation.hide {
+  opacity: 0;
+}
+
+.streak-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.streak-animation-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Círculo central */
+.streak-circle {
+  position: relative;
+  width: min(250px, 45vw);
+  height: min(250px, 45vw);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 4px solid;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+  animation: streakCirclePulse 2s ease-in-out infinite;
+  z-index: 10;
+}
+
+.streak-circle.basic {
+  box-shadow: 0 15px 50px rgba(34, 197, 94, 0.3);
+}
+
+.streak-circle.solid {
+  box-shadow: 0 15px 50px rgba(0, 191, 255, 0.3);
+}
+
+.streak-circle.golden {
+  box-shadow: 0 15px 50px rgba(255, 165, 0, 0.3);
+}
+
+.streak-circle.legendary {
+  box-shadow: 0 15px 50px rgba(255, 215, 0, 0.4);
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.1));
+}
+
+.streak-symbol-large {
+  font-size: clamp(3rem, 8vw, 5rem);
+  margin-bottom: 10px;
+  animation: streakBounce 1.5s ease-in-out infinite;
+}
+
+.streak-count-display {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+  margin-bottom: 5px;
+}
+
+.streak-days-label {
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
+}
+
+/* Partículas animadas */
+.streak-particle {
+  position: absolute;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  animation: streakParticleFloat 2s ease-out forwards;
+  opacity: 0;
+  z-index: 5;
+}
+
+/* Ondas de expansión */
+.streak-waves {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.streak-wave {
+  position: absolute;
+  width: min(250px, 45vw);
+  height: min(250px, 45vw);
+  border: 3px solid;
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+}
+
+.streak-wave:nth-child(1) {
+  animation: streakWaveExpand 2s ease-out 0s infinite;
+}
+
+.streak-wave:nth-child(2) {
+  animation: streakWaveExpand 2s ease-out 0.3s infinite;
+}
+
+.streak-wave:nth-child(3) {
+  animation: streakWaveExpand 2s ease-out 0.6s infinite;
+}
+
+/* Mensaje de celebración */
+.streak-message {
+  position: absolute;
+  bottom: clamp(40px, 10vh, 80px);
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: clamp(1.2rem, 4vw, 1.8rem);
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.8);
+  animation: streakMessageFadeIn 0.6s ease-out 0.5s both;
+  z-index: 10;
+  padding: 0 20px;
+  max-width: 90vw;
+}
+
+/* Confetti para niveles altos */
+.streak-confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 8;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  border-radius: 2px;
+  animation: confettiFall 3s linear forwards;
+}
+
+/* Animaciones */
+@keyframes streakCirclePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes streakBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  40% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+  60% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+@keyframes streakParticleFloat {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(0) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1) translateY(-30px) rotate(90deg);
+  }
+  80% {
+    opacity: 0.8;
+    transform: scale(1.2) translateY(-100px) rotate(270deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-150px) rotate(360deg);
+  }
+}
+
+@keyframes streakWaveExpand {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(2.5);
+  }
+}
+
+@keyframes streakMessageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .streak-overlay {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  
+  .streak-circle {
+    width: min(200px, 40vw);
+    height: min(200px, 40vw);
+    border-width: 3px;
+  }
+  
+  .confetti-piece {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .streak-circle {
+    width: min(180px, 38vw);
+    height: min(180px, 38vw);
+    border-width: 2px;
+  }
+  
+  .streak-message {
+    bottom: clamp(30px, 8vh, 60px);
+    padding: 0 15px;
+  }
+}
+
+/* Soporte para safe-area */
+@media (max-width: 768px) {
+  .streak-animation {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+}

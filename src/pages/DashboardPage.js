@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import TransactionModal from '../components/TransactionModal';
+import TransactionAnimation from '../components/TransactionAnimation';
+import StreakCounter from '../components/StreakCounter';
 import SummaryCard from '../components/SummaryCard';
 import HistoryTable from '../components/HistoryTable';
+import WelcomeModal from '../components/WelcomeModal';
 import './Dashboard.css';
 
 const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
@@ -13,6 +16,14 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [transactionToEdit, setTransactionToEdit] = useState(null);
+  
+  // Estados para la animación
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [animationType, setAnimationType] = useState('');
+  const [animationAmount, setAnimationAmount] = useState(0);
+
+  // Estado para el modal de bienvenida
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     setError(null);
@@ -20,7 +31,7 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
 
     const { data: profileData, error: profileError } = await supabase
       .from('profiles')
-      .select('full_name, country_code')
+      .select('full_name, country_code, has_seen_welcome, welcome_seen_at')
       .eq('id', session.user.id)
       .single();
 
@@ -41,11 +52,18 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
       } else {
         setProfile({ 
           full_name: session.user.user_metadata?.full_name || session.user.email?.split('@')[0] || 'Usuario',
-          country_code: session.user.user_metadata?.country_code || 'CO'
+          country_code: session.user.user_metadata?.country_code || 'CO',
+          has_seen_welcome: false
         });
+        // Mostrar bienvenida para nuevos usuarios
+        setShowWelcomeModal(true);
       }
     } else {
       setProfile(profileData);
+      // Verificar si debe mostrar el modal de bienvenida
+      if (!profileData.has_seen_welcome) {
+        setShowWelcomeModal(true);
+      }
     }
 
     const { data: transactionsData, error: transactionsError } = await supabase
@@ -110,6 +128,29 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
     setIsModalOpen(false); // <-- Cierra el modal
     setModalType('');
   };
+
+  // Función para manejar cuando se guarda una transacción
+  const handleTransactionSaved = (transaction) => {
+    // Mostrar animación de transacción primero
+    setAnimationType(transaction.type);
+    setAnimationAmount(transaction.amount);
+    setShowAnimation(true);
+    
+    // Actualizar datos
+    fetchUserData();
+  };
+
+  // Función para cuando termina la animación de transacción
+  const handleAnimationComplete = () => {
+    setShowAnimation(false);
+    
+    // Después de que termine la animación de transacción, mostrar la de racha
+    setTimeout(() => {
+      if (window.incrementStreak) {
+        window.incrementStreak();
+      }
+    }, 300); // Pequeño delay para que sea más suave
+  };
   
   if (loading) return <div className="loading-fullscreen">Cargando tus datos...</div>;
 
@@ -117,8 +158,15 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
     <div className="dashboard-grid-container">
       <main className="dashboard-main-content">
         <header className="dashboard-header">
-          <h1>Hola, {profile?.full_name}</h1>
-          <p>¿Qué movimiento quieres registrar hoy?</p>
+          <div className="header-content">
+            <div className="header-text">
+              <h1>Hola, {profile?.full_name}</h1>
+              <p>¿Qué movimiento quieres registrar hoy?</p>
+            </div>
+            <div className="header-actions">
+              <StreakCounter userId={session.user.id} />
+            </div>
+          </div>
         </header>
 
         {error && <p className="error-message dashboard-error">{error}</p>}
@@ -158,8 +206,24 @@ const DashboardPage = ({ session, isDarkMode, toggleDarkMode }) => {
           onClose={closeModal} 
           type={modalType} 
           session={session}
-          onTransactionSaved={fetchUserData}
+          onTransactionSaved={handleTransactionSaved}
           transactionToEdit={transactionToEdit}
+      />
+
+      {/* Animación de transacción */}
+      <TransactionAnimation
+        show={showAnimation}
+        type={animationType}
+        amount={animationAmount}
+        onComplete={handleAnimationComplete}
+      />
+
+      {/* Modal de bienvenida */}
+      <WelcomeModal
+        isOpen={showWelcomeModal}
+        onClose={() => setShowWelcomeModal(false)}
+        session={session}
+        isDarkMode={isDarkMode}
       />
     </div>
   );
