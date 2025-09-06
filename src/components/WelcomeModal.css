@@ -39,6 +39,8 @@
   overflow: hidden;
   animation: welcomeModalSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .welcome-modal-overlay.dark .welcome-modal {
@@ -147,9 +149,10 @@
 
 /* Content */
 .welcome-content {
-  padding: 40px 30px;
+  padding: 30px;
   text-align: center;
-  min-height: 400px;
+  flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
@@ -161,7 +164,7 @@
 }
 
 .slide-header {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .slide-title {
@@ -252,7 +255,7 @@
 .feature-slide {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
   align-items: center;
 }
 
@@ -260,7 +263,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   position: relative;
 }
 
@@ -420,6 +423,137 @@
   50% { transform: translateY(-3px) scale(1.1); }
 }
 
+/* Debts Demo */
+.debts-demo {
+  position: relative;
+}
+
+.debt-cards-demo {
+  display: flex;
+  gap: 12px;
+  animation: debtCardsFloat 3s ease-in-out infinite;
+  justify-content: center;
+}
+
+.debt-card {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 140px;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-modal-overlay.dark .debt-card {
+  background: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.debt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+}
+
+.debt-card.debt-owing::before {
+  background: linear-gradient(180deg, #10b981, #059669);
+}
+
+.debt-card.debt-owed::before {
+  background: linear-gradient(180deg, #f59e0b, #d97706);
+}
+
+.debt-type {
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.debt-card.debt-owing .debt-type {
+  color: #10b981;
+}
+
+.debt-card.debt-owed .debt-type {
+  color: #f59e0b;
+}
+
+.welcome-modal-overlay.dark .debt-card.debt-owing .debt-type {
+  color: #68d391;
+}
+
+.welcome-modal-overlay.dark .debt-card.debt-owed .debt-type {
+  color: #fbbf24;
+}
+
+.debt-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.welcome-modal-overlay.dark .debt-amount {
+  color: #f1f5f9;
+}
+
+.debt-creditor {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.welcome-modal-overlay.dark .debt-creditor {
+  color: #a0aec0;
+}
+
+.debt-icons {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+  justify-content: center;
+}
+
+.debt-icon {
+  font-size: 20px;
+  padding: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border-radius: 8px;
+  animation: debtIconPulse 2s ease-in-out infinite;
+}
+
+.debt-icon:nth-child(2) {
+  animation-delay: 0.4s;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.debt-icon:nth-child(3) {
+  animation-delay: 0.8s;
+  background: rgba(245, 158, 11, 0.1);
+}
+
+@keyframes debtCardsFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes debtIconPulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
 /* Feature Description */
 .feature-description {
   text-align: left;
@@ -538,6 +672,7 @@
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
+  flex-shrink: 0;
 }
 
 .welcome-modal-overlay.dark .welcome-navigation {

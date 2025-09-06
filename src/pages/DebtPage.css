@@ -1,0 +1,329 @@
+/* src/pages/DebtPage.css — limpio, sin degradados */
+
+.debt-page {
+  --bg: var(--background-color, #0b1120);
+  --card: var(--card-bg-color, #0f172a);
+  --text: var(--text-primary-color, #e5e7eb);
+  --muted: var(--text-secondary-color, #94a3b8);
+  --border: var(--border-color, #1f2a44);
+  --accent-mint-a: #2dd4bf;
+  --accent-mint-b: #34d399;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --primary-indigo: #667eea;
+
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: var(--bg);
+  min-height: 100vh;
+  color: var(--text);
+}
+
+/* ====== Header plano ====== */
+.debt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.debt-header h1 {
+  color: var(--text);
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.create-debt-btn {
+  background: linear-gradient(90deg, var(--accent-mint-a), var(--accent-mint-b));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  font-size: 1rem;
+}
+.create-debt-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(45, 212, 191, 0.3);
+}
+.create-debt-btn.primary {
+  padding: 16px 32px;
+  font-size: 1.1rem;
+}
+
+/* ====== Stats ====== */
+.debt-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease;
+}
+.stat-card:hover { transform: translateY(-5px); }
+
+.stat-card h3 {
+  margin: 0 0 10px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.stat-card .amount {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.stat-card.owed-to-me .amount { color: var(--accent-green); }
+.stat-card.i-owe .amount      { color: var(--accent-red); }
+.stat-card.balance .amount.positive { color: var(--accent-green); }
+.stat-card.balance .amount.negative { color: var(--accent-red); }
+
+/* ====== Controles ====== */
+.debt-controls {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
+}
+
+.filter-section { margin-bottom: 20px; }
+.filter-title {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--bg);
+  border: 2px solid var(--border);
+  border-radius: 20px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+.filter-chip:hover {
+  border-color: var(--accent-mint-a);
+  background: rgba(45, 212, 191, 0.05);
+  transform: translateY(-1px);
+}
+.filter-chip.active {
+  background: linear-gradient(90deg, var(--accent-mint-a), var(--accent-mint-b));
+  color: white;
+  border-color: var(--accent-mint-a);
+  box-shadow: 0 4px 12px rgba(45, 212, 191, 0.3);
+}
+
+.sort-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.sort-label {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0;
+}
+.sort-select {
+  padding: 10px 16px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  border-radius: 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+.sort-select:hover { border-color: var(--accent-mint-a); }
+.sort-select:focus {
+  outline: none;
+  border-color: var(--primary-indigo);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+/* ====== Lista / vacío ====== */
+.debts-list { display: grid; gap: 20px; }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+}
+.empty-state .empty-icon { font-size: 4rem; margin-bottom: 20px; }
+.empty-state h2 {
+  color: var(--text);
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+.empty-state p {
+  color: var(--muted);
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+  .debt-page { padding: 15px; }
+
+  .debt-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  .debt-header h1 { font-size: 2rem; text-align: center; }
+
+  .debt-stats {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .debt-controls { padding: 16px; }
+  .filter-section { margin-bottom: 16px; }
+  .filter-chips { gap: 6px; }
+
+  .filter-chip {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .sort-section { flex-direction: column; align-items: stretch; gap: 8px; }
+  .sort-label { font-size: 0.9rem; }
+  .sort-select { min-width: 100%; width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .debt-page { padding: 10px; }
+  .debt-header h1 { font-size: 1.8rem; }
+  .debt-controls { padding: 12px; }
+
+  .filter-chips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .filter-chip { padding: 10px 8px; font-size: 0.8rem; }
+
+  .create-debt-btn { width: 100%; margin-top: 10px; }
+
+  .stat-card { padding: 15px; }
+  .stat-card .amount { font-size: 1.5rem; }
+}
+
+/* ====== Dark mode enhancements ====== */
+[data-theme="dark"] .stat-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] .create-debt-btn {
+  box-shadow: 0 4px 15px rgba(45, 212, 191, 0.2);
+}
+[data-theme="dark"] .create-debt-btn:hover {
+  box-shadow: 0 8px 20px rgba(45, 212, 191, 0.3);
+}
+
+/* ====== Guard anti estilos globales ====== */
+.debt-page .modal-header,
+.debt-page .modal-header::before,
+.debt-page .modal-header::after {
+  background: transparent !important;
+  background-image: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  content: none !important;
+}
+
+/* ==== HOTFIX: matar cualquier degradado en el header de la página ==== */
+
+/* Headers comunes y sus pseudo-elementos */
+.debt-page header,
+.debt-page .debt-header,
+.debt-page .page-header,
+.debt-page .modal-header,
+.debt-page header::before,
+.debt-page .debt-header::before,
+.debt-page .page-header::before,
+.debt-page .modal-header::before,
+.debt-page header::after,
+.debt-page .debt-header::after,
+.debt-page .page-header::after,
+.debt-page .modal-header::after {
+  background: transparent !important;
+  background-image: none !important;
+  animation: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  content: none !important;
+  filter: none !important;
+}
+
+/* Por si hay un contenedor con overlay fijo */
+.debt-page [class*="header"]::before,
+.debt-page [class*="Header"]::before,
+.debt-page [class*="header"]::after,
+.debt-page [class*="Header"]::after {
+  background: transparent !important;
+  background-image: none !important;
+  content: none !important;
+}
+
+/* Si el degradado viene de utilidades Tailwind */
+.debt-page .bg-gradient-to-r,
+.debt-page .bg-gradient-to-l,
+.debt-page .bg-gradient-to-t,
+.debt-page .bg-gradient-to-b,
+.debt-page .from-indigo-500,
+.debt-page .from-purple-500,
+.debt-page .via-purple-500,
+.debt-page .to-purple-600,
+.debt-page .to-indigo-600 {
+  background-image: none !important;
+  background-color: transparent !important;
+}
+
+/* Aumentar especificidad por si algo muy fuerte pisa */
+.debt-page.debt-page .debt-header,
+.debt-page.debt-page .debt-header * {
+  background: transparent !important;
+  background-image: none !important;
+}
+

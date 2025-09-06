@@ -1,0 +1,113 @@
+/* src/components/PaymentModal.css */
+.payment-modal {
+  background-color: var(--card-bg-color);
+  border-radius: 15px;
+  width: 100%;
+  max-width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: modalAppear 0.3s ease-out;
+}
+
+.debt-summary-info {
+  padding: 0 25px 20px 25px;
+  background: var(--input-bg-color);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.debt-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary-color);
+  margin-bottom: 5px;
+}
+
+.debt-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary-color);
+  margin-bottom: 10px;
+}
+
+.pending-amount {
+  font-size: 0.95rem;
+  color: var(--text-primary-color);
+}
+
+.pending-amount strong {
+  color: #ef4444;
+  font-size: 1.1rem;
+}
+
+.payment-form {
+  padding: 0 25px 25px 25px;
+}
+
+.amount-suggestions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.suggestion-btn {
+  background: var(--input-bg-color);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.suggestion-btn:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.form-footer {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.form-footer .btn-primary,
+.form-footer .btn-secondary {
+  flex: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .payment-modal {
+    max-width: 95vw;
+  }
+
+  .debt-summary-info,
+  .payment-form {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .amount-suggestions {
+    flex-direction: column;
+  }
+
+  .suggestion-btn {
+    text-align: center;
+  }
+
+  .form-footer {
+    flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 480px) {
+  .debt-summary-info,
+  .payment-form {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabaseClient';
 import StreakAnimation from './StreakAnimation';
 import './StreakCounter.css';
@@ -6,7 +6,6 @@ import './StreakCounter.css';
 const StreakCounter = ({ userId, onStreakUpdate, isDarkMode }) => {
   const [currentStreak, setCurrentStreak] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
-  const [streakLevel, setStreakLevel] = useState('basic');
   const [lastActivityDate, setLastActivityDate] = useState(null);
   const [hasShownAnimationToday, setHasShownAnimationToday] = useState(false);
 
@@ -88,7 +87,7 @@ const StreakCounter = ({ userId, onStreakUpdate, isDarkMode }) => {
   };
 
   // Incrementar racha cuando hay nueva actividad
-  const incrementStreak = async () => {
+  const incrementStreak = useCallback(async () => {
     const today = new Date().toDateString();
     const lastActivity = lastActivityDate ? new Date(lastActivityDate).toDateString() : null;
 
@@ -111,12 +110,12 @@ const StreakCounter = ({ userId, onStreakUpdate, isDarkMode }) => {
         onStreakUpdate(newStreak);
       }
     }
-  };
+  }, [currentStreak, lastActivityDate, hasShownAnimationToday, onStreakUpdate]);
 
   // Función temporal para pruebas - resetear la animación del día
-  const resetDailyAnimation = () => {
+  const resetDailyAnimation = useCallback(() => {
     setHasShownAnimationToday(false);
-  };
+  }, []);
 
   // Exponer función para que otros componentes puedan incrementar la racha
   useEffect(() => {
@@ -126,7 +125,7 @@ const StreakCounter = ({ userId, onStreakUpdate, isDarkMode }) => {
       delete window.incrementStreak;
       delete window.resetDailyAnimation;
     };
-  }, [currentStreak, lastActivityDate, hasShownAnimationToday]);
+  }, [incrementStreak, resetDailyAnimation]);
 
   const handleStreakClick = () => {
     // Mostrar detalles de la racha o estadísticas

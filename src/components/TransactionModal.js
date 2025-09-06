@@ -31,7 +31,7 @@ const TransactionModal = ({ isOpen, onClose, type, session, onTransactionSaved, 
       setFormData({ amount: '', description: '', category: '', account: '' });
       setStep(1);
     }
-  }, [transactionToEdit, isOpen]); // Se ejecuta cuando cambia el objeto a editar o cuando se abre/cierra el modal
+  }, [transactionToEdit, isOpen, isEditing]); // Se ejecuta cuando cambia el objeto a editar o cuando se abre/cierra el modal
 
   if (!isOpen) return null;
 

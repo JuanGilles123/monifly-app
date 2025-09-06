@@ -1,0 +1,236 @@
+/* ===========================
+   DebtModal.css (limpio y aislado)
+   =========================== */
+
+/* --- Overlay --- */
+.debt-modal-overlay {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  animation: overlayFade .25s ease-out;
+}
+@keyframes overlayFade { from { opacity: 0 } to { opacity: 1 } }
+
+/* --- Contenedor modal --- */
+.debt-modal {
+  width: 100%; max-width: 560px;
+  display: flex; flex-direction: column;
+  max-height: 90vh;
+  background: var(--card-bg-color, #0f172a); /* fallback dark slate */
+  color: var(--text-primary-color, #e5e7eb);
+  border-radius: 16px;
+  overflow: hidden;     /* recortes predecibles */
+  box-shadow: 0 24px 60px rgba(0,0,0,.45);
+  animation: modalIn .24s ease-out;
+  border: 1px solid rgba(255,255,255,.07);
+}
+@keyframes modalIn {
+  from { transform: translateY(10px) scale(.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* --- Header interno del modal (NO usar .modal-header) --- */
+.debt-header {
+  flex-shrink: 0;
+  padding: 18px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 60%, #667eea 100%);
+  background-size: 200% 200%;
+  color: #fff;
+  position: relative;
+}
+.debt-header h2 {
+  margin: 0; font-size: 1.25rem; font-weight: 700;
+}
+.close-button {
+  appearance: none; border: 0; background: rgba(255,255,255,.18);
+  width: 36px; height: 36px; border-radius: 999px;
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform .15s ease, background .15s ease;
+}
+.close-button:hover { transform: scale(1.05); background: rgba(255,255,255,.28); }
+
+/* --- Indicador de pasos --- */
+.step-indicator {
+  display: flex; gap: 8px;
+  padding: 10px 16px 14px;
+  background: linear-gradient(180deg, rgba(0,0,0,.0), rgba(0,0,0,.08));
+}
+.step-dot {
+  width: 34px; height: 34px; border-radius: 999px;
+  display: grid; place-items: center;
+  font-size: 1.05rem; line-height: 1;
+  background: rgba(255,255,255,.12);
+  color: #fff; cursor: pointer;
+  transition: transform .15s ease, background .15s ease, opacity .15s ease;
+  user-select: none;
+}
+.step-dot:hover    { transform: translateY(-1px); background: rgba(255,255,255,.18); }
+.step-dot.active   { outline: 2px solid rgba(255,255,255,.35); }
+.step-dot.completed { background: rgba(16,185,129,.25); }
+
+/* --- Contenido scrollable --- */
+.debt-content {
+  padding: 16px 20px;
+  overflow: auto;            /* scroll solo aquí */
+  max-height: calc(90vh - 160px); /* header + nav aprox */
+  scroll-behavior: smooth;
+  background: var(--card-bg-color, #0f172a);
+}
+
+/* Banner de error */
+.error-banner {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(239,68,68,.12);
+  color: #fecaca; border: 1px solid rgba(239,68,68,.25);
+  margin-bottom: 12px;
+}
+.error-icon { font-size: 18px; }
+.error-text { flex: 1; }
+.error-close {
+  appearance: none; border: 0; background: transparent; color: inherit;
+  font-size: 16px; cursor: pointer;
+}
+
+/* Contenedor del paso */
+.step-container { transition: opacity .2s ease, transform .2s ease; }
+.step-container.animating { opacity: .6; transform: translateY(4px); }
+
+/* Sección/step */
+.step-content { display: grid; gap: 14px; }
+.step-header { display: flex; gap: 10px; align-items: center; }
+.step-icon { font-size: 1.25rem; }
+
+/* Campos */
+.step-fields { display: grid; gap: 14px; }
+.form-group { display: grid; gap: 8px; }
+.form-group label {
+  font-weight: 600; font-size: .95rem; color: var(--text-primary-color,#e5e7eb);
+  display: flex; align-items: center; gap: 6px;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--input-bg-color, #0b1220);
+  color: var(--text-primary-color,#e5e7eb);
+  border: 1.5px solid var(--border-color, #1f2a44);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  box-sizing: border-box;
+}
+.form-group textarea { resize: vertical; min-height: 84px; }
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102,126,234,.18);
+}
+
+/* Radio/option cards */
+.radio-group { display: grid; gap: 10px; }
+.radio-option {
+  display: grid; grid-template-columns: 20px 1fr; gap: 10px; align-items: center;
+  padding: 12px 12px; border-radius: 12px;
+  border: 1.5px solid var(--border-color,#1f2a44);
+  background: var(--input-bg-color,#0b1220);
+  transition: border-color .15s ease, transform .15s ease;
+}
+.radio-option.selected { border-color: #667eea; background: rgba(102,126,234,.08); }
+.radio-option:hover    { transform: translateY(-1px); }
+.radio-icon { font-size: 1.1rem; }
+
+/* Bloque de cuotas */
+.installment-section {
+  display: grid; gap: 12px;
+  padding: 12px; border-radius: 12px;
+  background: rgba(102,126,234,.06);
+  border: 1px solid rgba(102,126,234,.18);
+}
+
+/* Resumen */
+.debt-summary {
+  margin-top: 6px; padding: 12px; border-radius: 12px;
+  background: var(--input-bg-color,#0b1220);
+  border: 1px solid var(--border-color,#1f2a44);
+}
+.debt-summary h4 { margin: 0 0 8px; font-size: 1rem; }
+.summary-item {
+  display: flex; justify-content: space-between; gap: 12px;
+  padding: 8px 0; border-bottom: 1px dashed var(--border-color,#1f2a44);
+}
+.summary-item:last-child { border-bottom: 0; }
+.summary-item span, .summary-item strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* --- Navegación --- */
+.debt-navigation {
+  flex-shrink: 0;
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--nav-bg, #0b1220);
+  border-top: 1px solid var(--border-color,#1f2a44);
+}
+.nav-info { color: var(--text-secondary-color,#94a3b8); font-size: .9rem; }
+
+.nav-button {
+  appearance: none; border: 0;
+  padding: 10px 16px; border-radius: 12px;
+  font-size: .95rem; font-weight: 700; letter-spacing: .2px;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  min-width: 120px;
+}
+.nav-button.secondary {
+  background: var(--card-bg-color,#0f172a);
+  color: var(--text-primary-color,#e5e7eb);
+  border: 1.5px solid var(--border-color,#1f2a44);
+}
+.nav-button.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  box-shadow: 0 8px 22px rgba(102,126,234,.28);
+}
+.nav-button:hover:not(.disabled) { transform: translateY(-1px); }
+.nav-button.disabled,
+.nav-button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+/* Spinner (botón Guardando...) */
+.spinner {
+  width: 16px; height: 16px; border-radius: 999px;
+  border: 2px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Responsivo --- */
+@media (max-width: 640px) {
+  .debt-modal { max-height: 92vh; }
+  .debt-content { max-height: calc(92vh - 170px); }
+  .nav-button { width: 100%; min-width: 0; }
+  .debt-navigation { flex-direction: column; align-items: stretch; gap: 10px; }
+}
+
+/* ===========================
+   Guard anti-degradado global
+   =========================== */
+/* Si tu pantalla de deudas tiene un wrapper .debts-page,
+   esto neutraliza cualquier estilo global .modal-header
+   que pueda “pintar” el fondo de toda la pantalla. */
+.debts-page .modal-header {
+  background: transparent !important;
+  animation: none !important;
+  border: 0 !important;
+}
+.debts-page .modal-header::before,
+.debts-page .modal-header::after {
+  content: none !important;
+}

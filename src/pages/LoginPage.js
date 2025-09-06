@@ -260,7 +260,7 @@ const RegisterForm = ({ setIsLoading, setIsRegistering }) => {
     await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {

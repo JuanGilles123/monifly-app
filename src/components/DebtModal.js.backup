@@ -1,0 +1,432 @@
+// src/  const [formData, setFormData] = useState({
+    type: 'i_owe', // 'i_owe' o 'owed_to_me'
+    creditor_debtor_name: '',
+    description: '',
+// src/components/DebtModal.js
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
+import './DebtModal.css';
+
+const DebtModal = ({ isOpen, onClose, session, debtToEdit, onDebtSaved }) => {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    type: 'i_owe', // 'i_owe' o 'owed_to_me'
+    creditor_debtor_name: '',
+    description: '',
+    total_amount: '',
+    payment_type: 'lump_sum', // 'lump_sum' o 'installment'
+    installments_number: '',
+    installment_frequency: 'monthly', // 'weekly', 'monthly'
+    due_date: '',
+    notes: ''
+  });
+    description: '',
+    total_amount: '',
+    payment_type: 'full', // 'full' o 'installments'
+    installments_number: '',
+    installment_frequency: 'monthly', // 'weekly', 'monthly'
+    due_date: '',
+    notes: ''
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const isEditing = debtToEdit !== null;
+
+  useEffect(() => {
+    if (isEditing && debtToEdit) {
+      setFormData({
+        type: debtToEdit.type || 'i_owe',
+        creditor_debtor_name: debtToEdit.creditor_debtor_name || '',
+        description: debtToEdit.title || debtToEdit.description || '',
+        total_amount: debtToEdit.original_amount?.toString() || '',
+        payment_type: debtToEdit.payment_type || 'full',
+        installments_number: debtToEdit.total_installments?.toString() || '',
+        installment_frequency: debtToEdit.payment_frequency || 'monthly',
+        due_date: debtToEdit.due_date ? debtToEdit.due_date.split('T')[0] : '',
+        notes: debtToEdit.notes || ''
+      });
+      setStep(5); // Ir al resumen para edición
+    } else {
+      setFormData({
+        type: 'i_owe',
+        creditor_debtor_name: '',
+        description: '',
+        total_amount: '',
+        payment_type: 'full',
+        installments_number: '',
+        installment_frequency: 'monthly',
+        due_date: '',
+        notes: ''
+      });
+      setStep(1);
+    }
+    setError(null);
+  }, [debtToEdit, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const nextStep = () => {
+    setError(null);
+    
+    // Validaciones por paso
+    switch (step) {
+      case 1:
+        if (!formData.type) {
+          setError('Selecciona el tipo de deuda');
+          return;
+        }
+        break;
+      case 2:
+        if (!formData.creditor_debtor_name.trim()) {
+          setError('Ingresa el nombre de la persona');
+          return;
+        }
+        if (!formData.description.trim()) {
+          setError('Ingresa una descripción');
+          return;
+        }
+        break;
+      case 3:
+        if (!formData.total_amount || parseFloat(formData.total_amount) <= 0) {
+          setError('Ingresa un monto válido');
+          return;
+        }
+        break;
+      case 4:
+        if (formData.payment_type === 'installments') {
+          if (!formData.installments_number || parseInt(formData.installments_number) <= 0) {
+            setError('Ingresa un número válido de cuotas');
+            return;
+          }
+        }
+        break;
+    }
+    
+    setStep(step + 1);
+  };
+
+  const prevStep = () => setStep(step - 1);
+
+  const resetAndClose = () => {
+    setError(null);
+    setStep(1);
+    onClose();
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const debtData = {
+        user_id: session.user.id,
+        type: formData.type,
+        creditor_debtor_name: formData.creditor_debtor_name.trim(),
+        title: formData.description.trim(),
+        description: formData.notes.trim() || null,
+        original_amount: parseFloat(formData.total_amount),
+        remaining_amount: parseFloat(formData.total_amount),
+        payment_type: formData.payment_type,
+        total_installments: formData.payment_type === 'installments' ? parseInt(formData.installments_number) : null,
+        payment_frequency: formData.payment_type === 'installments' ? formData.installment_frequency : null,
+        due_date: formData.due_date || null,
+        notes: formData.notes.trim() || null,
+        status: 'pending'
+      };
+
+      let result;
+      if (isEditing) {
+        result = await supabase
+          .from('debts')
+          .update(debtData)
+          .eq('id', debtToEdit.id);
+      } else {
+        result = await supabase
+          .from('debts')
+          .insert([debtData]);
+      }
+
+      if (result.error) throw result.error;
+
+      onDebtSaved();
+      resetAndClose();
+    } catch (error) {
+      console.error('Error saving debt:', error);
+      setError(error.message || 'Error al guardar la deuda');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getStepTitle = () => {
+    if (isEditing) return 'Editar Deuda';
+    
+    switch (step) {
+      case 1: return 'Tipo de Deuda';
+      case 2: return 'Información Básica';
+      case 3: return 'Monto';
+      case 4: return 'Tipo de Pago';
+      case 5: return 'Resumen';
+      default: return 'Nueva Deuda';
+    }
+  };
+
+  const installmentAmount = formData.payment_type === 'installments' && formData.installments_number 
+    ? parseFloat(formData.total_amount) / parseInt(formData.installments_number)
+    : 0;
+
+  return (
+    <div className="modal-overlay" onClick={resetAndClose}>
+      <div className="debt-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>{getStepTitle()}</h2>
+          <button className="close-btn" onClick={resetAndClose}>×</button>
+        </div>
+
+        {!isEditing && (
+          <div className="progress-bar">
+            <div className="progress" style={{ width: `${(step / 5) * 100}%` }}></div>
+          </div>
+        )}
+
+        <div className="modal-content">
+          {error && <div className="error-message">{error}</div>}
+
+          {/* Paso 1: Tipo de deuda */}
+          {step === 1 && (
+            <div className="step-content">
+              <h3>¿Qué tipo de deuda es?</h3>
+              <div className="debt-type-options">
+                <div 
+                  className={`debt-type-option ${formData.type === 'i_owe' ? 'selected' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, type: 'i_owe' }))}
+                >
+                  <div className="option-icon">💸</div>
+                  <h4>Yo debo</h4>
+                  <p>Dinero que tú debes a otra persona</p>
+                </div>
+                <div 
+                  className={`debt-type-option ${formData.type === 'owed_to_me' ? 'selected' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, type: 'owed_to_me' }))}
+                >
+                  <div className="option-icon">💰</div>
+                  <h4>Me deben</h4>
+                  <p>Dinero que otra persona te debe</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Paso 2: Información básica */}
+          {step === 2 && (
+            <div className="step-content">
+              <h3>Información básica</h3>
+              <div className="form-group">
+                <label>
+                  {formData.type === 'i_owe' ? 'Acreedor (a quién le debo)' : 'Deudor (quién me debe)'}
+                </label>
+                <input
+                  type="text"
+                  name="creditor_debtor_name"
+                  value={formData.creditor_debtor_name}
+                  onChange={handleInputChange}
+                  placeholder="Nombre de la persona"
+                  autoFocus
+                />
+              </div>
+              <div className="form-group">
+                <label>Descripción</label>
+                <input
+                  type="text"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  placeholder="¿Por qué concepto es la deuda?"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Paso 3: Monto */}
+          {step === 3 && (
+            <div className="step-content">
+              <h3>¿Cuál es el monto total?</h3>
+              <div className="form-group">
+                <label>Monto total</label>
+                <div className="amount-input">
+                  <span className="currency">$</span>
+                  <input
+                    type="number"
+                    name="total_amount"
+                    value={formData.total_amount}
+                    onChange={handleInputChange}
+                    placeholder="0"
+                    min="0"
+                    step="0.01"
+                    autoFocus
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Paso 4: Tipo de pago */}
+          {step === 4 && (
+            <div className="step-content">
+              <h3>¿Cómo se pagará?</h3>
+              <div className="payment-type-options">
+                <div 
+                  className={`payment-option ${formData.payment_type === 'one_time' ? 'selected' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, payment_type: 'one_time' }))}
+                >
+                  <h4>Pago único</h4>
+                  <p>Se paga todo de una vez</p>
+                </div>
+                <div 
+                  className={`payment-option ${formData.payment_type === 'installments' ? 'selected' : ''}`}
+                  onClick={() => setFormData(prev => ({ ...prev, payment_type: 'installments' }))}
+                >
+                  <h4>Pago en cuotas</h4>
+                  <p>Se paga en varias cuotas</p>
+                </div>
+              </div>
+
+              {formData.payment_type === 'installments' && (
+                <div className="installments-config">
+                  <div className="form-group">
+                    <label>Número de cuotas</label>
+                    <input
+                      type="number"
+                      name="installments_number"
+                      value={formData.installments_number}
+                      onChange={handleInputChange}
+                      placeholder="Ej: 12"
+                      min="2"
+                      max="60"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Frecuencia</label>
+                    <select
+                      name="installment_frequency"
+                      value={formData.installment_frequency}
+                      onChange={handleInputChange}
+                    >
+                      <option value="weekly">Semanal</option>
+                      <option value="monthly">Mensual</option>
+                    </select>
+                  </div>
+                  {formData.installments_number && formData.total_amount && (
+                    <div className="installment-preview">
+                      <p>Cada cuota será de: <strong>${installmentAmount.toFixed(2)}</strong></p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Fecha de vencimiento (opcional)</label>
+                <input
+                  type="date"
+                  name="due_date"
+                  value={formData.due_date}
+                  onChange={handleInputChange}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Paso 5: Resumen */}
+          {step === 5 && (
+            <div className="step-content">
+              <h3>{isEditing ? 'Confirmar cambios' : 'Resumen de la deuda'}</h3>
+              <div className="debt-summary">
+                <div className="summary-item">
+                  <label>Tipo:</label>
+                  <span className={`debt-type ${formData.type}`}>
+                    {formData.type === 'i_owe' ? 'Yo debo' : 'Me deben'}
+                  </span>
+                </div>
+                <div className="summary-item">
+                  <label>{formData.type === 'i_owe' ? 'Acreedor:' : 'Deudor:'}</label>
+                  <span>{formData.creditor_debtor_name}</span>
+                </div>
+                <div className="summary-item">
+                  <label>Descripción:</label>
+                  <span>{formData.description}</span>
+                </div>
+                <div className="summary-item">
+                  <label>Monto total:</label>
+                  <span className="amount">${parseFloat(formData.total_amount).toLocaleString()}</span>
+                </div>
+                <div className="summary-item">
+                  <label>Tipo de pago:</label>
+                  <span>
+                    {formData.payment_type === 'one_time' 
+                      ? 'Pago único' 
+                      : `${formData.installments_number} cuotas ${formData.installment_frequency === 'weekly' ? 'semanales' : 'mensuales'}`
+                    }
+                  </span>
+                </div>
+                {formData.payment_type === 'installments' && (
+                  <div className="summary-item">
+                    <label>Monto por cuota:</label>
+                    <span className="amount">${installmentAmount.toFixed(2)}</span>
+                  </div>
+                )}
+                {formData.due_date && (
+                  <div className="summary-item">
+                    <label>Fecha de vencimiento:</label>
+                    <span>{new Date(formData.due_date).toLocaleDateString()}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label>Notas adicionales (opcional)</label>
+                <textarea
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleInputChange}
+                  placeholder="Agregar detalles adicionales..."
+                  rows="3"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="modal-footer">
+          {step > 1 && !isEditing && (
+            <button className="btn-secondary" onClick={prevStep}>
+              Anterior
+            </button>
+          )}
+          
+          {step < 5 && !isEditing ? (
+            <button className="btn-primary" onClick={nextStep}>
+              Siguiente
+            </button>
+          ) : (
+            <button 
+              className="btn-primary" 
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? 'Guardando...' : isEditing ? 'Guardar cambios' : 'Crear deuda'}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DebtModal;

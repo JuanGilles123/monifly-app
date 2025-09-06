@@ -1,0 +1,468 @@
+/* src/components/DebtCard.css */
+.debt-card {
+  background: var(--card-bg-color);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.debt-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.debt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-color);
+}
+
+.debt-card.i_owe::before {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+}
+
+.debt-card.owed_to_me::before {
+  background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+}
+
+.debt-card.paid {
+  opacity: 0.7;
+  background: var(--input-bg-color);
+}
+
+.debt-card.overdue {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, var(--card-bg-color) 100%);
+}
+
+.debt-card.due-soon {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--card-bg-color) 100%);
+}
+
+/* Header */
+.debt-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.debt-info {
+  flex: 1;
+}
+
+.debt-type-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  background: var(--input-bg-color);
+  color: var(--text-secondary-color);
+}
+
+.debt-card.i_owe .debt-type-badge {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.debt-card.owed_to_me .debt-type-badge {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.creditor-name {
+  margin: 0 0 5px 0;
+  color: var(--text-primary-color);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.debt-description {
+  margin: 0;
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
+}
+
+.debt-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: var(--input-bg-color);
+  transform: scale(1.1);
+}
+
+.action-btn.delete:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Amounts */
+.debt-amounts {
+  margin-bottom: 15px;
+}
+
+.amount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.amount-row:last-child {
+  margin-bottom: 0;
+}
+
+.amount-row.pending {
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+  font-weight: 600;
+}
+
+.amount-row .label {
+  color: var(--text-secondary-color);
+  font-size: 0.9rem;
+}
+
+.amount-row .amount {
+  color: var(--text-primary-color);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.amount-row .amount.total {
+  color: var(--text-primary-color);
+}
+
+.amount-row .amount.paid {
+  color: #10b981;
+}
+
+.amount-row.pending .amount {
+  font-size: 1.1rem;
+  color: var(--text-primary-color);
+}
+
+.debt-card.i_owe .amount-row.pending .amount {
+  color: #ef4444;
+}
+
+.debt-card.owed_to_me .amount-row.pending .amount {
+  color: #10b981;
+}
+
+/* Progress bar */
+.progress-container {
+  margin: 15px 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.debt-card.i_owe .progress-fill {
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+  text-align: right;
+  display: block;
+}
+
+/* Status */
+.debt-status {
+  margin-bottom: 15px;
+}
+
+.status-text {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-text.paid {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.status-text.overdue {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.status-text.due-soon {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.status-text.normal,
+.status-text.no-due-date {
+  background: var(--input-bg-color);
+  color: var(--text-secondary-color);
+}
+
+/* Installment info */
+.installment-info {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: var(--input-bg-color);
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+}
+
+.installment-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary-color);
+}
+
+/* Footer */
+.debt-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-btn {
+  background: none;
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: var(--text-secondary-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.detail-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.payment-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.payment-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.payment-btn.partial {
+  background: var(--input-bg-color);
+  color: var(--text-primary-color);
+  border: 1px solid var(--border-color);
+}
+
+.payment-btn.partial:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.payment-btn.full {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.payment-btn.full:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+/* Details */
+.debt-details {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border-color);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.detail-row strong {
+  color: var(--text-secondary-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.detail-row span {
+  color: var(--text-primary-color);
+  font-size: 0.85rem;
+  text-align: right;
+  max-width: 60%;
+}
+
+.payments-history {
+  margin-top: 15px;
+}
+
+.payments-history strong {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-secondary-color);
+  font-size: 0.85rem;
+}
+
+.payments-list {
+  background: var(--input-bg-color);
+  border-radius: 8px;
+  padding: 10px;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.payment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.payment-item:last-child {
+  border-bottom: none;
+}
+
+.payment-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary-color);
+}
+
+.payment-amount {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #10b981;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .debt-card {
+    padding: 15px;
+  }
+
+  .debt-card-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .debt-actions {
+    align-self: flex-end;
+  }
+
+  .creditor-name {
+    font-size: 1.1rem;
+  }
+
+  .payment-actions {
+    flex-direction: column;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .detail-row span {
+    max-width: 100%;
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .debt-card {
+    padding: 12px;
+  }
+
+  .amount-row .amount {
+    font-size: 0.9rem;
+  }
+
+  .amount-row.pending .amount {
+    font-size: 1rem;
+  }
+
+  .action-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Dark mode enhancements */
+[data-theme="dark"] .debt-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .debt-card:hover {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .payments-list {
+  border: 1px solid var(--border-color);
+}

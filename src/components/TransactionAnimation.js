@@ -90,7 +90,6 @@ const TransactionAnimation = ({
         {/* Partículas adicionales distribuidas */}
         <div className="particles-container">
           {Array.from({ length: window.innerWidth < 768 ? 15 : 20 }, (_, i) => {
-            const isMobile = window.innerWidth < 768;
             return (
               <div
                 key={i}

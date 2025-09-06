@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './StreakAnimation.css';
 
 const StreakAnimation = ({ 
@@ -12,6 +12,10 @@ const StreakAnimation = ({
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [particles, setParticles] = useState([]);
+  
+  const handleComplete = useCallback(() => {
+    if (onComplete) onComplete();
+  }, [onComplete]);
 
   useEffect(() => {
     if (show) {
@@ -36,7 +40,7 @@ const StreakAnimation = ({
       // Ocultar después de la animación (tiempo fijo)
       const timer = setTimeout(() => {
         setIsVisible(false);
-        if (onComplete) onComplete();
+        handleComplete();
       }, 2000);
       
       return () => clearTimeout(timer);
@@ -44,7 +48,7 @@ const StreakAnimation = ({
       // Si show es false, asegurar que isVisible también sea false
       setIsVisible(false);
     }
-  }, [show, level]); // Removido onComplete de las dependencias para evitar bucles
+  }, [show, level, handleComplete]);
 
   if (!show && !isVisible) return null;
 

@@ -89,6 +89,7 @@ const Navbar = () => {
             <li onClick={toggleMenu}><Link to="/">Inicio</Link></li>
             <li onClick={toggleMenu}><Link to="/analytics">Análisis de Gastos</Link></li>
             <li onClick={toggleMenu}><Link to="/goals">Mis Metas</Link></li>
+            <li onClick={toggleMenu}><Link to="/debts">Mis Deudas</Link></li>
             <li onClick={toggleMenu}><Link to="/profile">Mi Perfil</Link></li>
             {/* --- NUEVO BOTÓN DE CERRAR SESIÓN --- */}
             <li>

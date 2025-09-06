@@ -110,7 +110,7 @@ const ProfilePage = ({ isDarkMode, toggleDarkMode }) => {
 
       // Usar la función segura de Supabase para actualizar perfil
       try {
-        const { data, error: profileError } = await supabase
+        const { error: profileError } = await supabase
           .rpc('update_user_profile', {
             new_full_name: formData.name
           });

@@ -83,6 +83,43 @@ const WelcomeModal = ({ isOpen, onClose, session, isDarkMode }) => {
       )
     },
     {
+      id: 'debts',
+      title: 'Sistema de Deudas',
+      subtitle: 'Gestiona lo que debes y te deben',
+      content: (
+        <div className="feature-slide debts-slide">
+          <div className="feature-icon debts-demo">
+            <div className="debt-cards-demo">
+              <div className="debt-card debt-owing">
+                <div className="debt-type">Me deben</div>
+                <div className="debt-amount">$2,500</div>
+                <div className="debt-creditor">Juan Pérez</div>
+              </div>
+              <div className="debt-card debt-owed">
+                <div className="debt-type">Yo debo</div>
+                <div className="debt-amount">$1,200</div>
+                <div className="debt-creditor">Banco</div>
+              </div>
+            </div>
+            <div className="debt-icons">
+              <div className="debt-icon">💳</div>
+              <div className="debt-icon">🏦</div>
+              <div className="debt-icon">👥</div>
+            </div>
+          </div>
+          <div className="feature-description">
+            <p>Lleva un control detallado de todas tus deudas y créditos pendientes.</p>
+            <p>Organiza pagos únicos o por cuotas con recordatorios automáticos.</p>
+            <div className="feature-benefits">
+              <div className="benefit">💰 Pagos únicos o cuotas</div>
+              <div className="benefit">📅 Recordatorios de vencimiento</div>
+              <div className="benefit">📊 Seguimiento completo</div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
       id: 'ready',
       title: '¡Estás listo para comenzar!',
       subtitle: 'Empieza a usar las nuevas funciones',
@@ -101,6 +138,10 @@ const WelcomeModal = ({ isOpen, onClose, session, isDarkMode }) => {
             <div className="quick-action">
               <span className="action-icon">🎯</span>
               <span>Crear primera meta</span>
+            </div>
+            <div className="quick-action">
+              <span className="action-icon">💳</span>
+              <span>Registrar deuda</span>
             </div>
           </div>
         </div>
